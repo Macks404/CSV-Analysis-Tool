@@ -36,10 +36,9 @@ uploads/
 tmp/
 
 # Python
+python/.venv/
 __pycache__/
 *.pyc
-.venv/
-venv/
 
 # Coverage
 coverage/

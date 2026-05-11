@@ -1,6 +1,6 @@
 # CSV Analysis Tool
 
-A full-stack CSV analysis application built with React, Vite, TypeScript, Express, and Node.js.
+A full-stack CSV analysis application built with React, Vite, TypeScript, Express, Python, and Node.js.
 
 ## Current Version Tech Stack
 
@@ -10,6 +10,7 @@ A full-stack CSV analysis application built with React, Vite, TypeScript, Expres
 - Bootstrap
 - Express
 - Node.js
+- Pandas
 
 ## Project Structure
 
