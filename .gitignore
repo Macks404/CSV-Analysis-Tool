@@ -43,3 +43,6 @@ venv/
 
 # Coverage
 coverage/
+
+# Test data
+test-data/

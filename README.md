@@ -2,7 +2,7 @@
 
 A full-stack CSV analysis application built with React, Vite, TypeScript, Express, and Node.js.
 
-## Tech Stack
+## Current Version Tech Stack
 
 - React
 - Vite
