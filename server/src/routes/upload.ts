@@ -4,6 +4,7 @@ saves it to the "uploads" directory, and returns information about the uploaded 
 import { Router } from "express";
 import multer from "multer";
 import path from "path";
+import { analyseCsvWithPython } from "../services/pythonAnalysisService.js";
 
 const router = Router();
 
@@ -28,9 +29,18 @@ const upload = multer({
   },
 });
 
-router.post("/", upload.single("csv"), (req, res) => {
+router.post("/", upload.single("csv"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  let analysis;
+  try {
+    analysis = await analyseCsvWithPython(req.file.path);
+  } catch (err: any) {
+    return res
+      .status(500)
+      .json({ error: "Failed to analyze CSV file", details: err.message });
   }
 
   res.json({
@@ -39,6 +49,7 @@ router.post("/", upload.single("csv"), (req, res) => {
     savedAs: req.file.filename,
     path: req.file.path,
     size: req.file.size,
+    analysis: analysis,
   });
 });
 
