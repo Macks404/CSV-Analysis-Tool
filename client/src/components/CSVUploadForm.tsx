@@ -1,13 +1,12 @@
 import { useState } from "react";
 import CsvDropZone from "./CSVDropZone.tsx";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function CSVUploadForm() {
-  const [csvFile, setCsvFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string>("");
+  const navigate = useNavigate();
 
   async function handleFileChange(file: File | null) {
-    setCsvFile(file);
-
     if (!file) {
       setMessage("Only CSV Files Are Accepted!");
       return;
@@ -30,8 +29,11 @@ function CSVUploadForm() {
       }
 
       setMessage(`Analysis Complete: ${data.originalName}`);
-
       console.log(data);
+
+      navigate("/analysis", {
+        state: { analysis: data.analysis, originalName: data.originalName },
+      });
     } catch (error) {
       setMessage("Error occurred while analyzing CSV.");
       console.error(error);
