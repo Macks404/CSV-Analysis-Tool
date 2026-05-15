@@ -39,13 +39,13 @@ def analyze_csv(file_path: str):
     column_types = detect_column_types(df)
 
     result = {
-        "num_rows": len(df),
-        "num_columns": len(df.columns),
+        "rows": len(df),
+        "numColumns": len(df.columns),
         "columns": df.columns.tolist(),
-        "data_types": df.dtypes.apply(lambda x: x.name).to_dict(),
-        "missing_values": df.isnull().sum().to_dict(),
-        "unique_values": {col: df[col].nunique() for col in df.columns},
-        "column_types": column_types
+        "dataTypes": df.dtypes.apply(lambda x: x.name).to_dict(),
+        "missingValues": df.isnull().sum().to_dict(),
+        "uniqueValues": {col: df[col].nunique() for col in df.columns},
+        "columnTypes": column_types
     }
     
     return result
