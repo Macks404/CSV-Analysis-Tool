@@ -1,4 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   ResponsiveContainer,
+// } from "recharts";
 
 interface CSVAnalysis {
   rows: number;
@@ -19,7 +27,12 @@ function AnalyzePage() {
   const location = useLocation();
   const state = location.state as AnalysisPageState;
 
-  console.log(state);
+  // const missingValuesData = Object.entries(state.analysis.missingValues).map(
+  //   ([column, missing]) => ({
+  //     column,
+  //     missing,
+  //   }),
+  // );
 
   return (
     <div className="container py-5">
@@ -49,6 +62,16 @@ function AnalyzePage() {
             ))}
           </tbody>
         </table>
+        {/* <div style={{ width: "60%", height: 300 }}>
+          <ResponsiveContainer>
+            <BarChart data={missingValuesData}>
+              <XAxis dataKey="column" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="missing" fill="#ff3b58" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div> */}
       </div>
     </div>
   );

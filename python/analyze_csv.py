@@ -33,12 +33,23 @@ def detect_column_types(df):
 
     return results
 
+def read_csv(file_path: str):
+    encodings = ["utf-8", "utf-8-sig", "cp1252", "latin1"]
+    error = None
+    for encoding in encodings:
+        try:
+            return pd.read_csv(file_path, encoding=encoding), encoding
+        except UnicodeDecodeError as err:
+            error = err
+    raise ValueError(f"Couldn't read CSV file due to encoding error: {error}")
+
 
 def analyze_csv(file_path: str):
-    df = pd.read_csv(file_path)
+    df, enc = read_csv(file_path)
     column_types = detect_column_types(df)
 
     result = {
+        "encoding": enc,
         "rows": len(df),
         "numColumns": len(df.columns),
         "columns": df.columns.tolist(),
