@@ -64,10 +64,19 @@ def detect_column_types(df) -> dict:
 
     return results
 
+def improve_column_names(df: pd.DataFrame) -> dict:
+    improved_names = {}
+
+    for column in df.columns:
+        improved_names[column] = " ".join(word.capitalize() for word in column.split("_"))
+
+    return improved_names
+
 def analyze_csv(file_path: str) -> dict:
     df, enc = read_csv(file_path)
     df = clean_csv(df)
     column_types = detect_column_types(df)
+    improved_column_names = improve_column_names(df)
 
     result = {
         "encoding": enc,
@@ -78,6 +87,7 @@ def analyze_csv(file_path: str) -> dict:
         "missingValues": df.isnull().sum().to_dict(),
         "uniqueValues": {col: df[col].nunique() for col in df.columns},
         "columnTypes": column_types,
+        "improvedColumnNames": improved_column_names
     }
     
     return result
