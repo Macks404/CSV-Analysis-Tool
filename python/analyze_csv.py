@@ -38,6 +38,10 @@ def standardize_values(df: pd.DataFrame, column_types: dict[str, str]) -> pd.Dat
             converted = clean_numeric_strings(df[column])
             converted = pd.to_numeric(converted, errors="coerce")
             df[column] = converted
+        elif column_type == "datetime":
+            converted = pd.to_datetime(df[column], errors="coerce", format="mixed")
+            df[column] = converted
+            print(converted)
 
     return df
 
@@ -174,4 +178,4 @@ def analyze_csv(file_path: str) -> dict:
 if __name__ == "__main__":
     file_path = sys.argv[1]
     analysis_result = analyze_csv(file_path)
-    print(json.dumps(analysis_result, indent=4))
+    #print(json.dumps(analysis_result, indent=4))
