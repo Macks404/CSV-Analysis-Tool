@@ -34,14 +34,34 @@ def delete_repeated_rows(df: pd.DataFrame) -> pd.DataFrame:
 
 def standardize_values(df: pd.DataFrame, column_types: dict[str, str]) -> pd.DataFrame:
     for column, column_type in column_types.items():
-        if column_type == "numeric":
-            converted = pd.to_numeric(df[column],errors="coerce")
+        if column_type in ["monetary", "numeric"]:
+            converted = clean_numeric_strings(df[column])
+            converted = pd.to_numeric(converted, errors="coerce")
             df[column] = converted
 
     return df
 
+def clean_numeric_strings(values: pd.Series) -> pd.Series:
+    cleaned = values.astype(str).str.strip()
+
+    # Accounting negatives like "(£1,200)" mean -1200
+    is_accounting_negative = cleaned.str.match(r"^\(.*\)$")
+
+    # Keep only digits, decimal points, commas, and minus signs
+    cleaned = cleaned.str.replace(r"[^\d.,\-]", "", regex=True)
+
+    # Remove thousands separators
+    cleaned = cleaned.str.replace(",", "", regex=False)
+
+    # Restore negative sign for accounting-style negatives
+    cleaned = cleaned.where(~is_accounting_negative, "-" + cleaned)
+
+    return cleaned
+
 def is_monetary(column: pd.Series) -> bool:
-    text_values = column.astype(str).str.strip()
+    non_null_column = column.dropna()
+
+    text_values = non_null_column.astype(str).str.strip()
 
     currency_symbols = "£$€¥₹₩₽₺₫₪₴₦₱฿₡₲₵₭₮₸₼₾₿"
 
@@ -72,22 +92,19 @@ def is_monetary(column: pd.Series) -> bool:
     if has_currency_symbol.mean() > 0.8:
         return True
     
-    monetary_terms = r"\b(?:amount|price|cost|value|total|fee|charge|payment|salary|wage|income|revenue|expense|gross)\b"
-    column_name = str(column.name)
+    monetary_terms = r"\b(price|cost|value|total|fee|charge|payment|salary|wage|income|revenue|expense|expenses|gross|profit|loss|balance|budget|spend|spending|cash|turnover|sales|sale|earnings|pay|paid|payable|receivable|invoice|billing|bill|tax|vat|gst|discount|refund|credit|debit|deposit|withdrawal|commission|bonus|dividend|interest|principal|premium|rent|loan|debt|equity|asset|liability|capital|margin|markup|fare|rate|subtotal|net|ebitda|ebit)\b"
+    # also need terms that prevent false positives
+    negative_terms = r"\b(count|number|num|qty|quantity|likes|views|followers|subscribers|comments|shares|clicks|impressions|visits|downloads|ratings|votes|score|points|age|year|duration|days|hours|minutes|seconds|rank|id)\b"
+
+    column_name = str(column.name).replace("_", " ")
 
     # Can also check if the values are numeric and the column header contains currency related words
-    if bool(re.search(monetary_terms, column_name, flags=re.IGNORECASE)):
-        numeric_values = pd.to_numeric(text_values.str.replace(currency_regex, "", regex=True), errors="coerce")
+    if bool(re.search(monetary_terms, column_name, flags=re.IGNORECASE)) and not bool(re.search(negative_terms, column_name, flags=re.IGNORECASE)):
+        numeric_values = pd.to_numeric(clean_numeric_strings(text_values), errors="coerce")
         if numeric_values.notna().mean() > 0.8:
             return True
 
     return False
-
-def clean_csv(df: pd.DataFrame) -> pd.DataFrame:
-    df = delete_repeated_columns(df)
-    df = delete_repeated_rows(df)
-    df = standardize_values(df, detect_column_types(df))
-    return df
 
 def detect_column_types(df) -> dict:
     results = {}
@@ -102,7 +119,7 @@ def detect_column_types(df) -> dict:
         elif pd.api.types.is_bool_dtype(column_data):
             results[col] = "boolean"
 
-        elif is_monetary(non_null_data):
+        elif is_monetary(column_data):
             results[col] = "monetary"
 
         elif pd.api.types.is_numeric_dtype(column_data):
@@ -114,7 +131,7 @@ def detect_column_types(df) -> dict:
             
             if date_ratio > 0.8:
                 results[col] = "datetime"
-            elif column_data.nunique() < 20:
+            elif column_data.nunique() < 12:
                 results[col] = "categorical"
             else:
                 results[col] = "text"
@@ -131,20 +148,25 @@ def improve_column_names(df: pd.DataFrame) -> dict:
 
 def analyze_csv(file_path: str) -> dict:
     df, enc = read_csv(file_path)
-    df = clean_csv(df)
+    df = delete_repeated_columns(df)
+    df = delete_repeated_rows(df)
     column_types = detect_column_types(df)
+    df = standardize_values(df, column_types)
     improved_column_names = improve_column_names(df)
 
     result = {
         "encoding": enc,
-        "rows": len(df),
-        "numColumns": len(df.columns),
-        "columns": df.columns.tolist(),
-        "dataTypes": df.dtypes.apply(lambda x: x.name).to_dict(),
-        "missingValues": df.isnull().sum().to_dict(),
-        "uniqueValues": {col: df[col].nunique() for col in df.columns},
-        "columnTypes": column_types,
-        "improvedColumnNames": improved_column_names
+
+        "columnData": {
+            "columns": df.columns.tolist(),
+            "improvedColumnNames": improved_column_names,
+            "columnTypes": column_types,
+        },
+
+        "valueData": {
+            "missingValues": df.isnull().sum().to_dict(),
+            "uniqueValues": {col: df[col].nunique() for col in df.columns}
+        }
     }
     
     return result
