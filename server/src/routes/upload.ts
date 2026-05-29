@@ -46,9 +46,6 @@ router.post("/", upload.single("csv"), async (req, res) => {
   res.json({
     message: "CSV uploaded successfully",
     originalName: req.file.originalname,
-    savedAs: req.file.filename,
-    path: req.file.path,
-    size: req.file.size,
     analysis: analysis,
   });
 });

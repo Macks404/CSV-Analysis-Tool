@@ -9,13 +9,13 @@ import { Link, useLocation } from "react-router-dom";
 // } from "recharts";
 
 interface CSVAnalysis {
-  rows: number;
-  numColumns: number;
+  encoding: string;
   columns: string[];
-  dataTypes: string[];
+  improvedColumnNames: Record<string, string>;
+  columnTypes: Record<string, string>;
+
   missingValues: Record<string, number>;
   uniqueValues: Record<string, number>;
-  columnTypes: Record<string, string>;
 }
 
 interface AnalysisPageState {
