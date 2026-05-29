@@ -11,31 +11,23 @@ function CSVUploadForm() {
       setMessage("Only CSV Files Are Accepted!");
       return;
     }
-    setMessage("Analyzing File...");
+    setMessage("Detecting Columns...");
 
     const formData = new FormData();
     formData.append("csv", file);
 
     try {
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/upload/detect-columns", {
         method: "POST",
         body: formData,
       });
       const data = await response.json();
 
-      if (!response.ok) {
-        setMessage(`Error: ${data.error || "Unknown error occurred."}`);
-        return;
-      }
-
-      setMessage(`Analysis Complete: ${data.originalName}`);
-      console.log(data);
-
-      navigate("/analysis", {
-        state: { analysis: data.analysis, originalName: data.originalName },
+      navigate("/file-overview", {
+        state: { data },
       });
     } catch (error) {
-      setMessage("Error occurred while analyzing CSV.");
+      setMessage("Error occurred while detecting columns.");
       console.error(error);
     }
   }

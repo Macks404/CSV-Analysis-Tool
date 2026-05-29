@@ -4,7 +4,7 @@ saves it to the "uploads" directory, and returns information about the uploaded 
 import { Router } from "express";
 import multer from "multer";
 import path from "path";
-import { analyseCsvWithPython } from "../services/pythonAnalysisService.js";
+import { executePythonScript } from "../services/pythonAnalysisService.js";
 
 const router = Router();
 
@@ -29,14 +29,35 @@ const upload = multer({
   },
 });
 
-router.post("/", upload.single("csv"), async (req, res) => {
+router.post("/detect-columns", upload.single("csv"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  let data;
+  try {
+    data = await executePythonScript("detect_column_types", req.file.path);
+  } catch (err: any) {
+    return res
+      .status(500)
+      .json({ error: "Failed to detect columns", details: err.message });
+  }
+
+  res.json({
+    message: "CSV uploaded successfully",
+    originalName: req.file.originalname,
+    data: data,
+  });
+});
+
+router.post("/analyse", upload.single("csv"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
   let analysis;
   try {
-    analysis = await analyseCsvWithPython(req.file.path);
+    analysis = await executePythonScript("analyze_csv", req.file.path);
   } catch (err: any) {
     return res
       .status(500)

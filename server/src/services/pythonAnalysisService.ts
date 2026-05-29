@@ -1,9 +1,12 @@
 import { spawn } from "child_process";
 import path from "path";
 
-export function analyseCsvWithPython(filePath: string): Promise<unknown> {
+export function executePythonScript(
+  scriptName: string,
+  filePath: string,
+): Promise<unknown> {
   return new Promise((resolve, reject) => {
-    const scriptPath = path.resolve("../python/analyze_csv.py");
+    const scriptPath = path.resolve(`../python/${scriptName}.py`);
 
     const pythonProcess = spawn("python", [scriptPath, filePath]);
 
