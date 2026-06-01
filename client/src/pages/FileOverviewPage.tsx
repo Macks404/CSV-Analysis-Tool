@@ -1,9 +1,31 @@
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function FileOverviewPage() {
   const location = useLocation();
   const state = location.state;
-  console.log(state);
+  const navigate = useNavigate();
+
+  async function handleContinue() {
+    try {
+      const formData = new FormData();
+      formData.append("csv", state.file);
+      formData.append(
+        "columnTypes",
+        JSON.stringify(state.data.analysis.columnTypes),
+      );
+
+      const response = await fetch("/api/upload/analyse", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      navigate("/analysis", { state: { data } });
+    } catch (error) {
+      console.error("Error during analysis:", error);
+    }
+  }
 
   return (
     <div>
@@ -19,12 +41,12 @@ function FileOverviewPage() {
               </tr>
             </thead>
             <tbody>
-              {state.data.data.columns.map((col: string, index: number) => (
+              {state.data.analysis.columns.map((col: string, index: number) => (
                 <tr key={index} style={{ border: "1px solid #ccc" }}>
                   <td style={{ border: "1px solid #ccc" }}>{col}</td>
                   <td style={{ border: "1px solid #ccc" }}>
                     <select
-                      value={state.data.data.columnTypes[col]}
+                      value={state.data.analysis.columnTypes[col]}
                       style={{
                         width: "100%",
                         padding: "5px",
@@ -51,6 +73,8 @@ function FileOverviewPage() {
       ) : (
         <p>No file data available.</p>
       )}
+
+      <button onClick={handleContinue}>Continue Analysis</button>
     </div>
   );
 }

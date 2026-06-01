@@ -34,9 +34,9 @@ router.post("/detect-columns", upload.single("csv"), async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  let data;
+  let analysis;
   try {
-    data = await executePythonScript("detect_column_types", req.file.path);
+    analysis = await executePythonScript("detect_column_types", req.file.path);
   } catch (err: any) {
     return res
       .status(500)
@@ -46,7 +46,7 @@ router.post("/detect-columns", upload.single("csv"), async (req, res) => {
   res.json({
     message: "CSV uploaded successfully",
     originalName: req.file.originalname,
-    data: data,
+    analysis: analysis,
   });
 });
 
@@ -55,9 +55,24 @@ router.post("/analyse", upload.single("csv"), async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
+  let columnTypes: Record<string, string> = {};
+  if (req.body.columnTypes) {
+    try {
+      columnTypes = JSON.parse(req.body.columnTypes);
+    } catch (err: any) {
+      return res
+        .status(400)
+        .json({ error: "Invalid columnTypes format", details: err.message });
+    }
+  }
+
   let analysis;
   try {
-    analysis = await executePythonScript("analyze_csv", req.file.path);
+    analysis = await executePythonScript(
+      "analyze_csv",
+      req.file.path,
+      columnTypes,
+    );
   } catch (err: any) {
     return res
       .status(500)

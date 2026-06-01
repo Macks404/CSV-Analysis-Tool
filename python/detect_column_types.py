@@ -92,10 +92,8 @@ if __name__ == "__main__":
     column_types = detect_column_types(df)
 
     output = {
-        "savedName": file_path.split("/")[-1],
         "columns": df.columns.tolist(),
         "columnTypes": column_types,
-        "encoding": enc
     }
     print(json.dumps(output))
 

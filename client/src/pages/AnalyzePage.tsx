@@ -1,12 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   ResponsiveContainer,
-// } from "recharts";
+import { useLocation } from "react-router-dom";
 
 interface CSVAnalysis {
   encoding: string;
@@ -18,26 +10,14 @@ interface CSVAnalysis {
   uniqueValues: Record<string, number>;
 }
 
-interface AnalysisPageState {
-  analysis: CSVAnalysis;
-  originalName: string;
-}
-
 function AnalyzePage() {
   const location = useLocation();
-  const state = location.state as AnalysisPageState;
-
-  // const missingValuesData = Object.entries(state.analysis.missingValues).map(
-  //   ([column, missing]) => ({
-  //     column,
-  //     missing,
-  //   }),
-  // );
+  const state = location.state;
 
   return (
     <div className="container py-5">
       <h1 className="text-center mb-4 fs-2">
-        Analysis of file: {state.originalName}
+        Analysis of file: {state.data.originalName}
       </h1>
 
       <div className="table-responsive">
@@ -52,26 +32,16 @@ function AnalyzePage() {
           </thead>
 
           <tbody>
-            {state.analysis.columns.map((column) => (
+            {state.data.analysis.columns.map((column) => (
               <tr key={column}>
                 <td>{column}</td>
-                <td>{state.analysis.columnTypes[column]}</td>
-                <td>{state.analysis.missingValues[column]}</td>
-                <td>{state.analysis.uniqueValues[column]}</td>
+                <td>{state.data.analysis.columnTypes[column]}</td>
+                <td>{state.data.analysis.missingValues[column]}</td>
+                <td>{state.data.analysis.uniqueValues[column]}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        {/* <div style={{ width: "60%", height: 300 }}>
-          <ResponsiveContainer>
-            <BarChart data={missingValuesData}>
-              <XAxis dataKey="column" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="missing" fill="#ff3b58" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div> */}
       </div>
     </div>
   );

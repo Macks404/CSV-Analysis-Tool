@@ -4,14 +4,20 @@ import path from "path";
 export function executePythonScript(
   scriptName: string,
   filePath: string,
+  columnTypes?: Record<string, string>,
 ): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const scriptPath = path.resolve(`../python/${scriptName}.py`);
 
-    const pythonProcess = spawn("python", [scriptPath, filePath]);
-
     let output = "";
     let errorOutput = "";
+
+    const args = [scriptPath, filePath];
+    if (columnTypes) {
+      args.push(JSON.stringify(columnTypes));
+    }
+
+    const pythonProcess = spawn("python", args);
 
     pythonProcess.stdout.on("data", (data) => {
       output += data.toString();

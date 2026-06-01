@@ -69,18 +69,18 @@ def improve_column_names(df: pd.DataFrame) -> dict:
 
     return improved_names
 
-def analyze_csv(file_path: str) -> dict:
+def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     df, enc = read_csv(file_path)
     df = delete_repeated_columns(df)
     df = delete_repeated_rows(df)
-    #df = standardize_values(df)
+    df = standardize_values(df, column_types)
     improved_column_names = improve_column_names(df)
 
     result = {
         "encoding": enc,
         "columns": df.columns.tolist(),
         "improvedColumnNames": improved_column_names,
-        #"columnTypes": column_types,
+        "columnTypes": column_types,
         "missingValues": df.isnull().sum().to_dict(),
         "uniqueValues": {col: df[col].nunique() for col in df.columns}
     }
@@ -89,5 +89,6 @@ def analyze_csv(file_path: str) -> dict:
 
 if __name__ == "__main__":
     file_path = sys.argv[1]
-    analysis_result = analyze_csv(file_path)
+    column_types = json.loads(sys.argv[2])
+    analysis_result = analyze_csv(file_path, column_types)
     print(json.dumps(analysis_result, indent=4))

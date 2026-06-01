@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CsvDropZone from "./CSVDropZone.tsx";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function CSVUploadForm() {
   const [message, setMessage] = useState<string>("");
@@ -15,6 +15,7 @@ function CSVUploadForm() {
 
     const formData = new FormData();
     formData.append("csv", file);
+    console.log("FormData content:", formData.get("csv"));
 
     try {
       const response = await fetch("/api/upload/detect-columns", {
@@ -23,8 +24,10 @@ function CSVUploadForm() {
       });
       const data = await response.json();
 
+      console.log("Received data from server:", data);
+
       navigate("/file-overview", {
-        state: { data },
+        state: { data, file },
       });
     } catch (error) {
       setMessage("Error occurred while detecting columns.");
