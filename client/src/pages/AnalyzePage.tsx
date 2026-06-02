@@ -13,11 +13,13 @@ interface CSVAnalysis {
 function AnalyzePage() {
   const location = useLocation();
   const state = location.state;
+  const analysis: CSVAnalysis = state.data.analysis;
+  const originalName: string = state.data.originalName;
 
   return (
     <div className="container py-5">
       <h1 className="text-center mb-4 fs-2">
-        Analysis of file: {state.data.originalName}
+        Analysis of file: {originalName}
       </h1>
 
       <div className="table-responsive">
@@ -32,12 +34,12 @@ function AnalyzePage() {
           </thead>
 
           <tbody>
-            {state.data.analysis.columns.map((column) => (
+            {analysis.columns.map((column) => (
               <tr key={column}>
                 <td>{column}</td>
-                <td>{state.data.analysis.columnTypes[column]}</td>
-                <td>{state.data.analysis.missingValues[column]}</td>
-                <td>{state.data.analysis.uniqueValues[column]}</td>
+                <td>{analysis.columnTypes[column]}</td>
+                <td>{analysis.missingValues[column]}</td>
+                <td>{analysis.uniqueValues[column]}</td>
               </tr>
             ))}
           </tbody>

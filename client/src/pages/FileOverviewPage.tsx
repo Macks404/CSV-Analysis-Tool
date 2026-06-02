@@ -1,19 +1,25 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
+interface ColumnAnalysis {
+  columnTypes: Record<string, string>;
+  columns: Record<string, string>;
+}
 
 function FileOverviewPage() {
   const location = useLocation();
   const state = location.state;
+  const analysis: ColumnAnalysis = state.data.analysis;
+
   const navigate = useNavigate();
+  const [columnTypes, setColumnTypes] = useState(analysis.columnTypes);
 
   async function handleContinue() {
     try {
       const formData = new FormData();
       formData.append("csv", state.file);
-      formData.append(
-        "columnTypes",
-        JSON.stringify(state.data.analysis.columnTypes),
-      );
+      formData.append("columnTypes", JSON.stringify(columnTypes));
 
       const response = await fetch("/api/upload/analyse", {
         method: "POST",
@@ -46,7 +52,13 @@ function FileOverviewPage() {
                   <td style={{ border: "1px solid #ccc" }}>{col}</td>
                   <td style={{ border: "1px solid #ccc" }}>
                     <select
-                      value={state.data.analysis.columnTypes[col]}
+                      value={columnTypes[col]}
+                      onChange={(e) => {
+                        setColumnTypes({
+                          ...columnTypes,
+                          [col]: e.target.value,
+                        });
+                      }}
                       style={{
                         width: "100%",
                         padding: "5px",
