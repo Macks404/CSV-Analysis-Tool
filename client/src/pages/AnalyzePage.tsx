@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface CSVAnalysis {
   encoding: string;
@@ -15,6 +16,8 @@ function AnalyzePage() {
   const state = location.state;
   const analysis: CSVAnalysis = state.data.analysis;
   const originalName: string = state.data.originalName;
+
+  const navigate = useNavigate();
 
   return (
     <div className="container py-5">
@@ -45,6 +48,8 @@ function AnalyzePage() {
           </tbody>
         </table>
       </div>
+
+      <button onClick={() => navigate(-1)}>Made a mistake? Go Back</button>
     </div>
   );
 }
