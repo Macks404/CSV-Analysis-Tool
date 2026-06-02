@@ -5,6 +5,7 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import { executePythonScript } from "../services/pythonAnalysisService.js";
+import fs from "fs/promises";
 
 const router = Router();
 
@@ -34,20 +35,27 @@ router.post("/detect-columns", upload.single("csv"), async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  let analysis;
   try {
-    analysis = await executePythonScript("detect_column_types", req.file.path);
-  } catch (err: any) {
-    return res
-      .status(500)
-      .json({ error: "Failed to detect columns", details: err.message });
-  }
+    const analysis = await executePythonScript(
+      "detect_column_types",
+      req.file.path,
+    );
 
-  res.json({
-    message: "CSV uploaded successfully",
-    originalName: req.file.originalname,
-    analysis: analysis,
-  });
+    return res.json({
+      message: "CSV uploaded successfully",
+      originalName: req.file.originalname,
+      analysis: analysis,
+    });
+  } catch (err: unknown) {
+    return res.status(500).json({
+      error: "Failed to detect columns",
+      details: (err as Error).message,
+    });
+  } finally {
+    await fs.unlink(req.file.path).catch((err) => {
+      console.error(`Failed to delete uploaded file: ${err.message}`);
+    });
+  }
 });
 
 router.post("/analyse", upload.single("csv"), async (req, res) => {
@@ -55,35 +63,34 @@ router.post("/analyse", upload.single("csv"), async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  let columnTypes: Record<string, string> = {};
-  if (req.body.columnTypes) {
-    try {
-      columnTypes = JSON.parse(req.body.columnTypes);
-    } catch (err: any) {
-      return res
-        .status(400)
-        .json({ error: "Invalid columnTypes format", details: err.message });
-    }
-  }
-
-  let analysis;
   try {
-    analysis = await executePythonScript(
+    let columnTypes: Record<string, string> = {};
+
+    if (req.body.columnTypes) {
+      columnTypes = JSON.parse(req.body.columnTypes);
+    }
+
+    const analysis = await executePythonScript(
       "analyze_csv",
       req.file.path,
       columnTypes,
     );
-  } catch (err: any) {
-    return res
-      .status(500)
-      .json({ error: "Failed to analyze CSV file", details: err.message });
-  }
 
-  res.json({
-    message: "CSV uploaded successfully",
-    originalName: req.file.originalname,
-    analysis: analysis,
-  });
+    return res.json({
+      message: "CSV uploaded successfully",
+      originalName: req.file.originalname,
+      analysis: analysis,
+    });
+  } catch (err: unknown) {
+    return res.status(500).json({
+      error: "Failed to analyze CSV file",
+      details: (err as Error).message,
+    });
+  } finally {
+    await fs.unlink(req.file.path).catch((err) => {
+      console.error(`Failed to delete uploaded file: ${err.message}`);
+    });
+  }
 });
 
 export default router;
