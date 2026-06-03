@@ -3,7 +3,7 @@ import pandas as pd
 import re
 import json
 
-from analyze_csv import clean_numeric_strings, read_csv
+from csv_utils import read_csv, clean_numeric_strings
 
 def is_monetary(column: pd.Series) -> bool:
     non_null_column = column.dropna()
