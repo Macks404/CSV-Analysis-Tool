@@ -34,39 +34,60 @@ function FileOverviewPage() {
   }
 
   return (
-    <div>
-      <h1>File Overview</h1>
-      {state ? (
-        <div>
-          <h2>Original File Name: {state.data.originalName}</h2>
-          <table border={1} cellPadding={5} cellSpacing={0}>
-            <thead>
+    <main className="container py-5">
+      <div className="page-card rounded-5 p-4 p-md-5">
+        <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+          <div>
+            <span className="badge rounded-pill text-bg-primary mb-3">
+              Step 2 of 3
+            </span>
+
+            <h1 className="h2 fw-bold mb-2">Review detected columns</h1>
+
+            <p className="text-muted-soft mb-0">
+              Check the detected data types before generating the full analysis.
+              You can correct anything that looks wrong.
+            </p>
+          </div>
+
+          <div className="text-md-end">
+            <p className="text-muted-soft small mb-1">File</p>
+            <strong>{state.data.originalName}</strong>
+          </div>
+        </div>
+
+        <div className="alert alert-primary border-0 rounded-4 mb-4">
+          <strong>Tip:</strong> If a column has been detected incorrectly,
+          change it here before continuing.
+        </div>
+
+        <div className="table-responsive">
+          <table className="table table-hover align-middle mb-0">
+            <thead className="table-light">
               <tr>
-                <th style={{ border: "1px solid #ccc" }}>Column Name</th>
-                <th>Column Type</th>
+                <th scope="col">Column name</th>
+                <th scope="col" style={{ width: "260px" }}>
+                  Detected type
+                </th>
               </tr>
             </thead>
+
             <tbody>
-              {state.data.analysis.columns.map((col: string, index: number) => (
-                <tr key={index} style={{ border: "1px solid #ccc" }}>
-                  <td style={{ border: "1px solid #ccc" }}>{col}</td>
-                  <td style={{ border: "1px solid #ccc" }}>
+              {state.data.analysis.columns.map((col: string) => (
+                <tr key={col}>
+                  <td>
+                    <div className="fw-semibold">{col}</div>
+                  </td>
+
+                  <td>
                     <select
-                      value={columnTypes[col]}
+                      className="form-select"
+                      value={columnTypes[col] ?? "text"}
                       onChange={(e) => {
                         setColumnTypes({
                           ...columnTypes,
                           [col]: e.target.value,
                         });
-                      }}
-                      style={{
-                        width: "100%",
-                        padding: "5px",
-                        border: "none",
-                        fontSize: "14px",
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        fontFamily: "Arial, sans-serif",
-                        transition: "border-color 0.3s, background-color 0.3s",
                       }}
                     >
                       <option value="boolean">Boolean</option>
@@ -82,12 +103,19 @@ function FileOverviewPage() {
             </tbody>
           </table>
         </div>
-      ) : (
-        <p>No file data available.</p>
-      )}
 
-      <button onClick={handleContinue}>Continue Analysis</button>
-    </div>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-4">
+          <p className="text-muted-soft small mb-0">
+            These choices will be used to clean values and generate the final
+            analysis.
+          </p>
+
+          <button className="btn btn-primary px-4" onClick={handleContinue}>
+            Continue analysis
+          </button>
+        </div>
+      </div>
+    </main>
   );
 }
 

@@ -1,3 +1,4 @@
+import LandingPage from "./pages/LandingPage.tsx";
 import UploadPage from "./pages/UploadPage.tsx";
 import AnalyzePage from "./pages/AnalyzePage.tsx";
 import FileOverviewPage from "./pages/FileOverviewPage.tsx";
@@ -7,7 +8,8 @@ import { Routes, Route } from "react-router-dom";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<UploadPage />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/upload" element={<UploadPage />} />
       <Route path="/analysis" element={<AnalyzePage />} />
       <Route path="/file-overview" element={<FileOverviewPage />} />
       <Route path="*" element={<PageNotFound />} />
