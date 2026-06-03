@@ -56,13 +56,13 @@ function FileOverviewPage() {
           </div>
         </div>
 
-        <div className="alert alert-primary border-0 rounded-4 mb-4">
+        <div className="info-callout mb-4">
           <strong>Tip:</strong> If a column has been detected incorrectly,
           change it here before continuing.
         </div>
 
         <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0">
+          <table className="table table-hover align-middle mb-0 analysis-table">
             <thead className="table-light">
               <tr>
                 <th scope="col">Column name</th>
@@ -81,7 +81,7 @@ function FileOverviewPage() {
 
                   <td>
                     <select
-                      className="form-select"
+                      className="form-select analysis-select"
                       value={columnTypes[col] ?? "text"}
                       onChange={(e) => {
                         setColumnTypes({

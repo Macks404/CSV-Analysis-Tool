@@ -70,7 +70,7 @@ function AnalyzePage() {
           </div>
         </div>
 
-        <div className="table-responsive">
+        <div className="table-responsive analysis-table">
           <table className="table table-hover align-middle mb-0">
             <thead className="table-light">
               <tr>
