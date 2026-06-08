@@ -50,6 +50,81 @@ def improve_column_names(df: pd.DataFrame) -> dict:
 
     return improved_names
 
+def get_numeric_correlations(df: pd.DataFrame, column_types: dict[str, str]) -> dict:
+    numeric_columns = [col for col, col_type in column_types.items() if col_type in ["numeric", "monetary"] and col in df.columns]
+    correlations = df[numeric_columns].corr().to_dict()
+
+    for col in correlations:
+        for other_col in correlations[col]:
+            if col == other_col:
+                continue
+            corr_value = correlations[col][other_col]
+            if pd.isna(corr_value):
+                correlations[col][other_col] = None
+            else:
+                correlations[col][other_col] = round(corr_value, 4)
+    
+    return correlations
+
+def get_scatter_charts(
+    df: pd.DataFrame,
+    correlations: dict,
+    min_correlation: float = 0.5,
+    max_points: int = 500
+) -> list[dict]:
+    charts = []
+
+    seen_pairs = set()
+
+    for x_column, related_columns in correlations.items():
+        for y_column, correlation in related_columns.items():
+            if correlation is None:
+                continue
+
+            if x_column == y_column:
+                continue
+
+            pair_key = tuple(sorted([x_column, y_column]))
+
+            if pair_key in seen_pairs:
+                continue
+
+            seen_pairs.add(pair_key)
+
+            if abs(correlation) < min_correlation:
+                continue
+
+            chart_df = df[[x_column, y_column]].dropna()
+
+            if chart_df.empty:
+                continue
+
+            # Correlation is calculated from all data,
+            # but chart points are capped so the frontend does not get overloaded.
+            if len(chart_df) > max_points:
+                chart_df = chart_df.sample(max_points, random_state=42)
+
+            charts.append({
+                "id": f"scatter-{x_column}-{y_column}",
+                "chartType": "scatter",
+                "title": f"{x_column} vs {y_column}",
+                "description": f"Correlation: {correlation}",
+                "xColumn": x_column,
+                "yColumn": y_column,
+                "correlation": correlation,
+                "data": [
+                    {
+                        "x": float(row[x_column]),
+                        "y": float(row[y_column]),
+                    }
+                    for _, row in chart_df.iterrows()
+                ],
+            })
+
+    charts.sort(key=lambda chart: abs(chart["correlation"]), reverse=True)
+
+    return charts
+
 def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     df, enc = read_csv(file_path)
     df = delete_repeated_columns(df)
@@ -63,7 +138,9 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
         "improvedColumnNames": improved_column_names,
         "columnTypes": column_types,
         "missingValues": df.isnull().sum().to_dict(),
-        "uniqueValues": {col: df[col].nunique() for col in df.columns}
+        "uniqueValues": {col: df[col].nunique() for col in df.columns},
+        "correlations": get_numeric_correlations(df, column_types),
+        "scatterCharts": get_scatter_charts(df, get_numeric_correlations(df, column_types))
     }
     
     return result
@@ -79,4 +156,4 @@ if __name__ == "__main__":
         column_types = detect_column_types(df)
 
     analysis_result = analyze_csv(file_path, column_types)
-    print(json.dumps(analysis_result, indent=4))
+    print(json.dumps(analysis_result, allow_nan=False))

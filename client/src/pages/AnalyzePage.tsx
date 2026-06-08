@@ -17,6 +17,8 @@ function AnalyzePage() {
   const analysis: CSVAnalysis = state.data.analysis;
   const originalName: string = state.data.originalName;
 
+  console.log(location.state);
+
   const navigate = useNavigate();
 
   return (
