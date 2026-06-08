@@ -1,5 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import CorrelationScatterChart, {
+  type CorrelationChart,
+} from "../components/CorrelationScatterChart";
 
 interface CSVAnalysis {
   encoding: string;
@@ -9,6 +12,7 @@ interface CSVAnalysis {
 
   missingValues: Record<string, number>;
   uniqueValues: Record<string, number>;
+  scatterCharts?: CorrelationChart[];
 }
 
 function AnalyzePage() {
@@ -16,8 +20,6 @@ function AnalyzePage() {
   const state = location.state;
   const analysis: CSVAnalysis = state.data.analysis;
   const originalName: string = state.data.originalName;
-
-  console.log(location.state);
 
   const navigate = useNavigate();
 
@@ -72,40 +74,9 @@ function AnalyzePage() {
           </div>
         </div>
 
-        <div className="table-responsive analysis-table">
-          <table className="table table-hover align-middle mb-0">
-            <thead className="table-light">
-              <tr>
-                <th scope="col">Column</th>
-                <th scope="col">Type</th>
-                <th scope="col">Missing values</th>
-                <th scope="col">Unique values</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {analysis.columns.map((column) => (
-                <tr key={column}>
-                  <td>
-                    <div className="fw-semibold">
-                      {analysis.improvedColumnNames[column] ?? column}
-                    </div>
-                    <div className="text-muted-soft small">{column}</div>
-                  </td>
-
-                  <td>
-                    <span className="badge rounded-pill text-bg-primary">
-                      {analysis.columnTypes[column] ?? "unknown"}
-                    </span>
-                  </td>
-
-                  <td>{analysis.missingValues[column] ?? 0}</td>
-                  <td>{analysis.uniqueValues[column] ?? 0}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {analysis.scatterCharts?.map((chart) => (
+          <CorrelationScatterChart key={chart.id} chart={chart} />
+        ))}
 
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-4">
           <p className="text-muted-soft small mb-0">

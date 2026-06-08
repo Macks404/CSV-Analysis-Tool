@@ -108,7 +108,7 @@ def get_scatter_charts(
                 "id": f"scatter-{x_column}-{y_column}",
                 "chartType": "scatter",
                 "title": f"{x_column} vs {y_column}",
-                "description": f"Correlation: {correlation}",
+                "description": f"",
                 "xColumn": x_column,
                 "yColumn": y_column,
                 "correlation": correlation,
