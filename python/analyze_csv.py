@@ -125,12 +125,44 @@ def get_scatter_charts(
 
     return charts
 
+def get_bar_charts(df: pd.DataFrame, column_types: dict[str, str], max_categories: int = 10) -> list[dict]:
+    charts = []
+
+    for column, column_type in column_types.items():
+        if column_type != "categorical" or column not in df.columns:
+            continue
+
+        value_counts = df[column].value_counts().nlargest(max_categories)
+
+        charts.append({
+            "id": f"bar-{column}",
+            "chartType": "bar",
+            "title": f"Distribution of {column}",
+            "description": f"",
+            "xColumn": column,
+            "yColumn": "count",
+            "data": [
+                {
+                    "x": str(index),
+                    "y": int(count),
+                }
+                for index, count in value_counts.items()
+            ],
+        })
+
+    return charts
+
 def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     df, enc = read_csv(file_path)
     df = delete_repeated_columns(df)
     df = delete_repeated_rows(df)
     df = standardize_values(df, column_types)
     improved_column_names = improve_column_names(df)
+    
+    corrolations = get_numeric_correlations(df, column_types)
+
+    charts = get_scatter_charts(df, corrolations)
+    charts.extend(get_bar_charts(df, column_types))
 
     result = {
         "encoding": enc,
@@ -139,8 +171,8 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
         "columnTypes": column_types,
         "missingValues": df.isnull().sum().to_dict(),
         "uniqueValues": {col: df[col].nunique() for col in df.columns},
-        "correlations": get_numeric_correlations(df, column_types),
-        "scatterCharts": get_scatter_charts(df, get_numeric_correlations(df, column_types))
+        "correlations": corrolations,
+        "charts": charts,
     }
     
     return result

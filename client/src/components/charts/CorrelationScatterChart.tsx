@@ -8,16 +8,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-export interface CorrelationChart {
-  id: string;
-  chartType: "scatter";
-  title: string;
-  description: string;
-  xColumn: string;
-  yColumn: string;
-  correlation: number;
-  data: { x: number; y: number }[];
-}
+import type { CorrelationChart } from "./chartTypes";
 
 function CorrelationScatterChart({ chart }: { chart: CorrelationChart }) {
   return (

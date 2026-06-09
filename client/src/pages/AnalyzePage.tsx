@@ -1,8 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import CorrelationScatterChart, {
-  type CorrelationChart,
-} from "../components/CorrelationScatterChart";
+import ChartRenderer from "../components/charts/ChartRenderer";
+import type { ChartConfig } from "../components/charts/chartTypes";
 
 interface CSVAnalysis {
   encoding: string;
@@ -12,7 +11,7 @@ interface CSVAnalysis {
 
   missingValues: Record<string, number>;
   uniqueValues: Record<string, number>;
-  scatterCharts?: CorrelationChart[];
+  charts?: ChartConfig[];
 }
 
 function AnalyzePage() {
@@ -22,6 +21,8 @@ function AnalyzePage() {
   const originalName: string = state.data.originalName;
 
   const navigate = useNavigate();
+
+  console.log("Received analysis data:", analysis);
 
   return (
     <main className="container py-5">
@@ -74,8 +75,8 @@ function AnalyzePage() {
           </div>
         </div>
 
-        {analysis.scatterCharts?.map((chart) => (
-          <CorrelationScatterChart key={chart.id} chart={chart} />
+        {analysis.charts?.map((chart) => (
+          <ChartRenderer key={chart.id} chart={chart} />
         ))}
 
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-4">
