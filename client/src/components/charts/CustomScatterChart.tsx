@@ -8,9 +8,9 @@ import {
   CartesianGrid,
 } from "recharts";
 
-import type { CorrelationChart } from "./chartTypes";
+import type { CorrelationChartData } from "./chartTypes";
 
-function CorrelationScatterChart({ chart }: { chart: CorrelationChart }) {
+function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
   return (
     <div className="page-card rounded-4 p-4 mb-4">
       <div className="mb-3">

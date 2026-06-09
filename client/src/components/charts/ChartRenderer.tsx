@@ -1,12 +1,13 @@
 import { type ChartConfig } from "./chartTypes";
-import CorrelationScatterChart from "./CorrelationScatterChart";
+import CorrelationScatterChart from "./CustomScatterChart";
+import CustomBarChart from "./CustomBarChart";
 
 function ChartRenderer({ chart }: { chart: ChartConfig }) {
   switch (chart.chartType) {
     case "scatter":
       return <CorrelationScatterChart chart={chart} />;
     case "bar":
-    // return <BarChartComponent chart={chart} />;
+      return <CustomBarChart chart={chart} />;
     case "line":
     // return <LineChartComponent chart={chart} />;
     default:

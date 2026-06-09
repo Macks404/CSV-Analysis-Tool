@@ -4,7 +4,7 @@ export interface BaseChart {
   description: string;
 }
 
-export interface CorrelationChart extends BaseChart {
+export interface CorrelationChartData extends BaseChart {
   chartType: "scatter";
   xColumn: string;
   yColumn: string;
@@ -16,7 +16,7 @@ export interface BarChartData extends BaseChart {
   chartType: "bar";
   xColumn: string;
   yColumn: string;
-  data: { name: string; value: number }[];
+  data: { x: string; y: number }[];
 }
 
 export interface LineChartData extends BaseChart {
@@ -26,4 +26,4 @@ export interface LineChartData extends BaseChart {
   data: { x: string | number; y: number }[];
 }
 
-export type ChartConfig = CorrelationChart | BarChartData | LineChartData;
+export type ChartConfig = CorrelationChartData | BarChartData | LineChartData;

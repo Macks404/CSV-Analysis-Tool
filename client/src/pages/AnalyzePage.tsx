@@ -21,6 +21,7 @@ function AnalyzePage() {
   const originalName: string = state.data.originalName;
 
   const navigate = useNavigate();
+  console.log(state);
 
   console.log("Received analysis data:", analysis);
 
