@@ -152,6 +152,37 @@ def get_bar_charts(df: pd.DataFrame, column_types: dict[str, str], max_categorie
 
     return charts
 
+def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict]:
+    charts = []
+
+    datetime_columns = [col for col, col_type in column_types.items() if col_type == "datetime" and col in df.columns]
+    numeric_columns = [col for col, col_type in column_types.items() if col_type in ["numeric", "monetary"] and col in df.columns]
+
+    for datetime_col in datetime_columns:
+        for numeric_col in numeric_columns:
+            chart_df = df[[datetime_col, numeric_col]].dropna().sort_values(by=datetime_col)
+
+            if chart_df.empty:
+                continue
+
+            charts.append({
+                "id": f"line-{datetime_col}-{numeric_col}",
+                "chartType": "line",
+                "title": f"{numeric_col} over Time",
+                "description": f"",
+                "xColumn": datetime_col,
+                "yColumn": numeric_col,
+                "data": [
+                    {
+                        "x": row[datetime_col].isoformat(),
+                        "y": float(row[numeric_col]),
+                    }
+                    for _, row in chart_df.iterrows()
+                ],
+            })
+
+    return charts
+
 def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     df, enc = read_csv(file_path)
     df = delete_repeated_columns(df)
@@ -163,7 +194,8 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
 
     charts = get_scatter_charts(df, corrolations)
     charts.extend(get_bar_charts(df, column_types))
-
+    charts.extend(get_line_charts(df, column_types))
+    
     result = {
         "encoding": enc,
         "columns": df.columns.tolist(),

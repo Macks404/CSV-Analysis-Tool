@@ -1,17 +1,16 @@
 import {
-  ScatterChart,
-  Scatter,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
   CartesianGrid,
+  Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
+import type { LineChartData } from "./chartTypes";
 
-import type { CorrelationChartData } from "./chartTypes";
-
-function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
+function CustomLineChart({ chart }: { chart: LineChartData }) {
   return (
     <div className="page-card rounded-4 p-4 mb-4">
       <div className="mb-3">
@@ -21,10 +20,9 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
 
       <div style={{ width: "100%", height: 360 }}>
         <ResponsiveContainer>
-          <ScatterChart>
+          <LineChart data={chart.data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-              type="number"
               dataKey="x"
               name={chart.xColumn}
               label={{
@@ -34,7 +32,6 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
               }}
             />
             <YAxis
-              type="number"
               dataKey="y"
               name={chart.yColumn}
               label={{
@@ -45,30 +42,12 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
             />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} />
             <Legend />
-            <Scatter name={chart.title} data={chart.data} />
-          </ScatterChart>
+            <Line type="monotone" dataKey="y" name={chart.title} dot={false} />
+          </LineChart>
         </ResponsiveContainer>
       </div>
-
-      <p className="text-muted-soft small mt-3 mb-0">
-        Correlation:{" "}
-        {chart.correlation > 0.7
-          ? "Strong positive"
-          : chart.correlation > 0.3
-            ? "Moderate positive"
-            : chart.correlation > 0.1
-              ? "Weak positive"
-              : chart.correlation < -0.7
-                ? "Strong negative"
-                : chart.correlation < -0.3
-                  ? "Moderate negative"
-                  : chart.correlation < -0.1
-                    ? "Weak negative"
-                    : "None"}{" "}
-        ({chart.correlation.toFixed(2)})
-      </p>
     </div>
   );
 }
 
-export default CorrelationScatterChart;
+export default CustomLineChart;

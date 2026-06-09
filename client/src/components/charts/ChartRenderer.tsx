@@ -1,6 +1,7 @@
 import { type ChartConfig } from "./chartTypes";
 import CorrelationScatterChart from "./CustomScatterChart";
 import CustomBarChart from "./CustomBarChart";
+import CustomLineChart from "./CustomLineChart";
 
 function ChartRenderer({ chart }: { chart: ChartConfig }) {
   switch (chart.chartType) {
@@ -9,7 +10,7 @@ function ChartRenderer({ chart }: { chart: ChartConfig }) {
     case "bar":
       return <CustomBarChart chart={chart} />;
     case "line":
-    // return <LineChartComponent chart={chart} />;
+      return <CustomLineChart chart={chart} />;
     default:
       return null;
   }
