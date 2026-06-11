@@ -177,95 +177,66 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
             chart_monthly_avg_df = chart_df.resample('M').mean().dropna().reset_index()
 
             charts.append({
-                "id": f"line-{datetime_col}-{numeric_col}-daily-sum",
-                "chartType": "line",
-                "title": f"{numeric_col} over Time (Daily Sum)",
+                "id": f"line-{datetime_col}-{numeric_col}",
+                "title": f"{numeric_col} over Time",
                 "description": "",
-                "xColumn": datetime_col,
-                "yColumn": numeric_col,
-                "data": [
-                    {
-                        "x": row[datetime_col].isoformat(),
-                        "y": float(row[numeric_col]),
-                    }
-                    for _, row in chart_daily_sum_df.iterrows()
-                ],
-            })
-            
-            charts.append({
-                "id": f"line-{datetime_col}-{numeric_col}-weekly-sum",
                 "chartType": "line",
-                "title": f"{numeric_col} over Time (Weekly Sum)",
-                "description": "",
-                "xColumn": datetime_col,
-                "yColumn": numeric_col,
-                "data": [
+                "charts": [
                     {
-                        "x": row[datetime_col].isoformat(),
-                        "y": float(row[numeric_col]),
-                    }
-                    for _, row in chart_weekly_sum_df.iterrows()
-                ],
-            })
-            charts.append({
-                "id": f"line-{datetime_col}-{numeric_col}-daily-avg",
-                "chartType": "line",
-                "title": f"{numeric_col} over Time (Daily Average)",
-                "description": "",
-                "xColumn": datetime_col,
-                "yColumn": numeric_col,
-                "data": [
+                        "name": "Daily Average",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_daily_avg_df.iterrows()
+                        ]
+                    },
                     {
-                        "x": row[datetime_col].isoformat(),
-                        "y": float(row[numeric_col]),
-                    }
-                    for _, row in chart_daily_avg_df.iterrows()
-                ],
-            })
-            charts.append({
-                "id": f"line-{datetime_col}-{numeric_col}-weekly-avg",
-                "chartType": "line",
-                "title": f"{numeric_col} over Time (Weekly Average)",
-                "description": "",
-                "xColumn": datetime_col,
-                "yColumn": numeric_col,
-                "data": [
+                        "name": "Weekly Average",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_weekly_avg_df.iterrows()
+                        ]
+                    },
                     {
-                        "x": row[datetime_col].isoformat(),
-                        "y": float(row[numeric_col]),
-                    }
-                    for _, row in chart_weekly_avg_df.iterrows()
-                ],
-            })
-            charts.append({
-                "id": f"line-{datetime_col}-{numeric_col}-monthly-sum",
-                "chartType": "line",
-                "title": f"{numeric_col} over Time (Monthly Sum)",
-                "description": "",
-                "xColumn": datetime_col,
-                "yColumn": numeric_col,
-                "data": [
+                        "name": "Monthly Average",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_monthly_avg_df.iterrows()
+                        ]
+                    },
                     {
-                        "x": row[datetime_col].isoformat(),
-                        "y": float(row[numeric_col]),
-                    }
-                    for _, row in chart_monthly_sum_df.iterrows()
-                ],
-            })
-            charts.append({
-                "id": f"line-{datetime_col}-{numeric_col}-monthly-avg",
-                "chartType": "line",
-                "title": f"{numeric_col} over Time (Monthly Average)",
-                "description": "",
-                "xColumn": datetime_col,
-                "yColumn": numeric_col,
-                "data": [
+                        "name": "Daily Sum",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_daily_sum_df.iterrows()
+                        ]
+                    },
                     {
-                        "x": row[datetime_col].isoformat(),
-                        "y": float(row[numeric_col]),
-                    }
-                    for _, row in chart_monthly_avg_df.iterrows()
-                ],
+                        "name": "Weekly Sum",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_weekly_sum_df.iterrows()
+                        ]
+                    },
+                    {
+                        "name": "Monthly Sum",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_monthly_sum_df.iterrows()
+                        ]
+                    }                    
+                ]
             })
 
     return charts

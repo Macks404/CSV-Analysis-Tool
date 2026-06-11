@@ -19,11 +19,16 @@ export interface BarChartData extends BaseChart {
   data: { x: string; y: number }[];
 }
 
-export interface LineChartData extends BaseChart {
+export interface LineChart extends BaseChart {
   chartType: "line";
+  charts: LineChartData[];
+}
+
+export interface LineChartData {
+  name: string;
   xColumn: string;
   yColumn: string;
   data: { x: string | number; y: number }[];
 }
 
-export type ChartConfig = CorrelationChartData | BarChartData | LineChartData;
+export type ChartConfig = CorrelationChartData | BarChartData | LineChart;
