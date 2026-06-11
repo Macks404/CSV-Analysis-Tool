@@ -9,6 +9,22 @@ import {
 } from "recharts";
 import type { LineChartData } from "./chartTypes";
 
+const dateFormatter = (value: any) => {
+  if (!value) return "";
+
+  const date = new Date(String(value));
+
+  if (isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 function CustomLineChart({ chart }: { chart: LineChartData }) {
   return (
     <div className="page-card rounded-4 p-4 mb-4">
@@ -27,6 +43,7 @@ function CustomLineChart({ chart }: { chart: LineChartData }) {
             <XAxis
               dataKey="x"
               name={chart.xColumn}
+              tickFormatter={dateFormatter}
               label={{
                 value: chart.xColumn,
                 position: "bottom",
@@ -43,8 +60,17 @@ function CustomLineChart({ chart }: { chart: LineChartData }) {
                 dy: -40,
               }}
             />
-            <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-            <Line type="monotone" dataKey="y" name={chart.title} dot={false} />
+            <Tooltip
+              labelFormatter={dateFormatter}
+              cursor={{ strokeDasharray: "3 3" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="y"
+              name={chart.title}
+              dot={false}
+              stroke="#008fd0"
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

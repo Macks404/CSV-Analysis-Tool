@@ -54,7 +54,7 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
               }}
             />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-            <Scatter name={chart.title} data={chart.data} fill="#636363" />
+            <Scatter name={chart.title} data={chart.data} fill="#008fd0" />
           </ScatterChart>
         </ResponsiveContainer>
       </div>

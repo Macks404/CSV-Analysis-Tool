@@ -50,7 +50,7 @@ function CustomBarChart({ chart }: { chart: BarChartData }) {
 
             <Tooltip />
 
-            <Bar dataKey="y" name={chart.yColumn} />
+            <Bar dataKey="y" name={chart.yColumn} fill="#008fd0" />
           </BarChart>
         </ResponsiveContainer>
       </div>
