@@ -5,7 +5,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -50,7 +49,6 @@ function CustomBarChart({ chart }: { chart: BarChartData }) {
             />
 
             <Tooltip />
-            <Legend />
 
             <Bar dataKey="y" name={chart.yColumn} />
           </BarChart>

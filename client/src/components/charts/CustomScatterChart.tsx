@@ -6,10 +6,19 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  Legend,
 } from "recharts";
 
 import type { CorrelationChartData } from "./chartTypes";
+
+function GetCorrolationLabel(correlation: number) {
+  if (correlation > 0.7) return "Strong positive";
+  if (correlation > 0.3) return "Moderate positive";
+  if (correlation > 0.1) return "Weak positive";
+  if (correlation < -0.7) return "Strong negative";
+  if (correlation < -0.3) return "Moderate negative";
+  if (correlation < -0.1) return "Weak negative";
+  return "None";
+}
 
 function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
   return (
@@ -21,7 +30,7 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
 
       <div style={{ width: "100%", height: 360 }}>
         <ResponsiveContainer>
-          <ScatterChart>
+          <ScatterChart margin={{ top: 5, right: 5, bottom: 30, left: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
@@ -29,8 +38,8 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
               name={chart.xColumn}
               label={{
                 value: chart.xColumn,
-                position: "insideBottom",
-                offset: -5,
+                position: "bottom",
+                dy: 10,
               }}
             />
             <YAxis
@@ -40,32 +49,18 @@ function CorrelationScatterChart({ chart }: { chart: CorrelationChartData }) {
               label={{
                 value: chart.yColumn,
                 angle: -90,
-                position: "insideLeft",
+                dy: -40,
+                position: "left",
               }}
             />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-            <Legend />
-            <Scatter name={chart.title} data={chart.data} />
+            <Scatter name={chart.title} data={chart.data} fill="#636363" />
           </ScatterChart>
         </ResponsiveContainer>
       </div>
 
       <p className="text-muted-soft small mt-3 mb-0">
-        Correlation:{" "}
-        {chart.correlation > 0.7
-          ? "Strong positive"
-          : chart.correlation > 0.3
-            ? "Moderate positive"
-            : chart.correlation > 0.1
-              ? "Weak positive"
-              : chart.correlation < -0.7
-                ? "Strong negative"
-                : chart.correlation < -0.3
-                  ? "Moderate negative"
-                  : chart.correlation < -0.1
-                    ? "Weak negative"
-                    : "None"}{" "}
-        ({chart.correlation.toFixed(2)})
+        Correlation: {GetCorrolationLabel(chart.correlation)}
       </p>
     </div>
   );

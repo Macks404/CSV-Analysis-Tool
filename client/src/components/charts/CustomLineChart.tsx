@@ -5,7 +5,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import type { LineChartData } from "./chartTypes";
@@ -20,15 +19,18 @@ function CustomLineChart({ chart }: { chart: LineChartData }) {
 
       <div style={{ width: "100%", height: 360 }}>
         <ResponsiveContainer>
-          <LineChart data={chart.data}>
+          <LineChart
+            data={chart.data}
+            margin={{ top: 5, right: 5, bottom: 30, left: 20 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="x"
               name={chart.xColumn}
               label={{
                 value: chart.xColumn,
-                position: "insideBottom",
-                offset: -5,
+                position: "bottom",
+                dy: 10,
               }}
             />
             <YAxis
@@ -37,11 +39,11 @@ function CustomLineChart({ chart }: { chart: LineChartData }) {
               label={{
                 value: chart.yColumn,
                 angle: -90,
-                position: "insideLeft",
+                position: "left",
+                dy: -40,
               }}
             />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-            <Legend />
             <Line type="monotone" dataKey="y" name={chart.title} dot={false} />
           </LineChart>
         </ResponsiveContainer>
