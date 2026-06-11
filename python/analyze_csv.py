@@ -175,6 +175,8 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
             chart_daily_avg_df = chart_df.resample('D').mean().dropna().reset_index()
             chart_monthly_sum_df = chart_df.resample('M').sum().dropna().reset_index()
             chart_monthly_avg_df = chart_df.resample('M').mean().dropna().reset_index()
+            chart_yearly_sum_df = chart_df.resample('M').sum().dropna().reset_index()
+            chart_yearly_avg_df = chart_df.resample('Y').mean().dropna().reset_index()
 
             charts.append({
                 "id": f"line-{datetime_col}-{numeric_col}",
@@ -210,6 +212,15 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
                         ]
                     },
                     {
+                        "name": "Yearly Average",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_yearly_avg_df.iterrows()
+                        ]
+                    },
+                    {
                         "name": "Daily Sum",
                         "xColumn": datetime_col,
                         "yColumn": numeric_col,
@@ -235,7 +246,16 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
                             {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
                             for _, row in chart_monthly_sum_df.iterrows()
                         ]
-                    }                    
+                    },
+                    {
+                        "name": "Yearly Sum",
+                        "xColumn": datetime_col,
+                        "yColumn": numeric_col,
+                        "data": [
+                            {"x": row[datetime_col].isoformat(), "y": float(row[numeric_col])}
+                            for _, row in chart_yearly_sum_df.iterrows()
+                        ]
+                    }                      
                 ]
             })
 
@@ -248,9 +268,9 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     df = standardize_values(df, column_types)
     improved_column_names = improve_column_names(df)
     
-    corrolations = get_numeric_correlations(df, column_types)
+    correlations = get_numeric_correlations(df, column_types)
 
-    charts = get_scatter_charts(df, corrolations)
+    charts = get_scatter_charts(df, correlations)
     charts.extend(get_bar_charts(df, column_types))
     charts.extend(get_line_charts(df, column_types))
     
@@ -261,7 +281,7 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
         "columnTypes": column_types,
         "missingValues": df.isnull().sum().to_dict(),
         "uniqueValues": {col: df[col].nunique() for col in df.columns},
-        "correlations": corrolations,
+        "correlations": correlations,
         "charts": charts,
     }
     
