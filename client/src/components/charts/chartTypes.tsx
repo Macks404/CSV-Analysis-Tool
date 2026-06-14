@@ -22,6 +22,7 @@ export interface BarChartData extends BaseChart {
 export interface LineChart extends BaseChart {
   chartType: "line";
   charts: LineChartData[];
+  relatedLineCharts?: LineChart[];
 }
 
 export interface LineChartData {

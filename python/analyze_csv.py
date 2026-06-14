@@ -261,6 +261,36 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
 
     return charts
 
+import copy
+
+def link_related_charts(charts: list[dict], max_related: int = 3) -> list[dict]:
+    linked_charts = copy.deepcopy(charts)
+
+    line_charts_only = [c for c in charts if c.get("chartType") == "line"]
+
+    for current_chart in linked_charts:
+        if current_chart.get("chartType") != "line":
+            continue
+
+        related_pool = []
+        current_x_column = current_chart["charts"][0]["xColumn"]
+
+        for potential_match in line_charts_only:
+            if current_chart["id"] == potential_match["id"]:
+                continue
+
+            match_x_column = potential_match["charts"][0]["xColumn"]
+            
+            if current_x_column == match_x_column:
+                related_pool.append(potential_match)
+
+        related_pool = related_pool[:max_related]
+
+        for sub_chart in current_chart["charts"]:
+            sub_chart["relatedLineCharts"] = related_pool
+
+    return linked_charts
+
 def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     df, enc = read_csv(file_path)
     df = delete_repeated_columns(df)
@@ -273,6 +303,8 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
     charts = get_scatter_charts(df, correlations)
     charts.extend(get_bar_charts(df, column_types))
     charts.extend(get_line_charts(df, column_types))
+
+    charts = link_related_charts(charts)
     
     result = {
         "encoding": enc,
