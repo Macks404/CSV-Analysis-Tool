@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { SchemaType } from "@google/generative-ai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,19 +10,49 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 const model = genAI.getGenerativeModel({
   model: "gemini-3.1-flash-lite",
   systemInstruction: `You are an expert Data Analyst and Strategic Business Advisor. 
-I will provide a statistical JSON summary of a dataset.
-
-YOUR DIRECTIVES:
-1. QUALITATIVE INSIGHTS ONLY: Do not attempt to calculate new math. Analyze the provided "timeTrends", "seasonality", "concentration", and "numericSummaries".
-2. IDENTIFY BOTTLENECKS & RISKS: Explicitly warn the user if revenue/data is heavily concentrated in one category, or if recent velocity is decelerating.
-3. EXPLAIN THE "SO WHAT": Translate strong correlations into business logic (e.g. "Because X correlates with Y, focusing on X will likely drive Y").
-4. FORMAT: Write in clean, professional Markdown. Use bolding for key metrics. Do NOT include an introduction or conclusion like "Here is your analysis". Get straight to the bullet points.`,
+I will provide a statistical JSON summary of a dataset. Provide high-level qualitative insights, explain the "so what" for the charts, and offer actionable improvement tips. Do not calculate new math.`,
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: SchemaType.OBJECT,
+      properties: {
+        summary: {
+          type: SchemaType.STRING,
+          description:
+            "A single sentence summarizing the overall dataset health and main takeaway.",
+        },
+        chartInsights: {
+          type: SchemaType.ARRAY,
+          description: "Actionable business logic for each provided chart.",
+          items: {
+            type: SchemaType.OBJECT,
+            properties: {
+              chartName: { type: SchemaType.STRING },
+              insight: {
+                type: SchemaType.STRING,
+                description:
+                  "What this means or how it can be improved. Do not just describe the chart visually.",
+              },
+            },
+            required: ["chartName", "insight"],
+          },
+        },
+        improvementTips: {
+          type: SchemaType.ARRAY,
+          description:
+            "Tips for improving the positive variables (like profit, retention, etc).",
+          items: { type: SchemaType.STRING },
+        },
+      },
+      required: ["summary", "chartInsights", "improvementTips"],
+    },
+  },
 });
-
 // Pass the full Python analysis object into this function
-export async function generateAIAnalysis(fullAnalysis: any): Promise<string> {
+// Update the return type from Promise<string> to Promise<any>
+export async function generateAIAnalysis(fullAnalysis: any): Promise<any> {
   try {
-    // 1. Create the "Skinny Payload" to save tokens and prevent overwhelming the AI
+    // 1. Create the "Skinny Payload" to save tokens
     const aiPayload = {
       columns: fullAnalysis.columns,
       missingValues: fullAnalysis.missingValues,
@@ -29,7 +60,6 @@ export async function generateAIAnalysis(fullAnalysis: any): Promise<string> {
       numericSummaries: fullAnalysis.numericSummaries,
       categoricalSummaries: fullAnalysis.categoricalSummaries,
       timeTrends: fullAnalysis.timeTrends,
-      // Map over charts to send ONLY metadata, excluding the massive data arrays
       generatedCharts: fullAnalysis.charts?.map((c: any) => ({
         title: c.title,
         type: c.chartType,
@@ -39,11 +69,20 @@ export async function generateAIAnalysis(fullAnalysis: any): Promise<string> {
     // 2. Generate content from Gemini
     const result = await model.generateContent(JSON.stringify(aiPayload));
 
-    // 3. Return the Markdown text
-    return result.response.text();
+    // 3. Extract the raw string
+    const rawText = result.response.text();
+
+    // 4. Parse the string into a structured JSON object and return it
+    return JSON.parse(rawText);
   } catch (error) {
     console.error("AI Generation Error:", error);
-    // Return a safe fallback string so the frontend doesn't crash if the API fails
-    return "AI insights are currently unavailable. Please review the charts below.";
+
+    // 5. Return a safe fallback OBJECT, not a string, so the frontend .map() doesn't crash
+    return {
+      summary:
+        "AI insights are currently unavailable. Please review the charts below.",
+      chartInsights: [],
+      improvementTips: [],
+    };
   }
 }
