@@ -173,10 +173,10 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
             chart_weekly_avg_df = chart_df.resample('W').mean().dropna().reset_index()
             chart_daily_sum_df = chart_df.resample('D').sum().dropna().reset_index()
             chart_daily_avg_df = chart_df.resample('D').mean().dropna().reset_index()
-            chart_monthly_sum_df = chart_df.resample('M').sum().dropna().reset_index()
-            chart_monthly_avg_df = chart_df.resample('M').mean().dropna().reset_index()
-            chart_yearly_sum_df = chart_df.resample('M').sum().dropna().reset_index()
-            chart_yearly_avg_df = chart_df.resample('Y').mean().dropna().reset_index()
+            chart_monthly_sum_df = chart_df.resample('ME').sum().dropna().reset_index()
+            chart_monthly_avg_df = chart_df.resample('ME').mean().dropna().reset_index()
+            chart_yearly_sum_df = chart_df.resample('YE').sum().dropna().reset_index()
+            chart_yearly_avg_df = chart_df.resample('YE').mean().dropna().reset_index()
 
             charts.append({
                 "id": f"line-{datetime_col}-{numeric_col}",
@@ -263,6 +263,60 @@ def get_line_charts(df: pd.DataFrame, column_types: dict[str, str]) -> list[dict
 
 import copy
 
+def get_numeric_summaries(df: pd.DataFrame, column_types: dict[str, str]) -> dict:
+    summaries = {}
+    numeric_cols = [col for col, col_type in column_types.items() if col_type in ["numeric", "monetary"] and col in df.columns]
+    
+    for col in numeric_cols:
+        desc = df[col].describe()
+        summaries[col] = {
+            "min": round(desc["min"], 2),
+            "average": round(desc["mean"], 2),
+            "median": round(desc["50%"], 2),
+            "max": round(desc["max"], 2),
+            "is_skewed": bool(abs(desc["mean"] - desc["50%"]) > (desc["mean"] * 0.5))
+        }
+    return summaries
+
+def get_categorical_summaries(df: pd.DataFrame, column_types: dict[str, str]) -> dict:
+    summaries = {}
+    cat_cols = [col for col, col_type in column_types.items() if col_type == "categorical" and col in df.columns]
+    
+    total_rows = len(df)
+    for col in cat_cols:
+        top_values = df[col].value_counts().nlargest(3)
+        summaries[col] = [
+            {"value": str(val), "percentage": round((count / total_rows) * 100, 1)}
+            for val, count in top_values.items()
+        ]
+    return summaries
+
+def get_time_trends(df: pd.DataFrame, column_types: dict[str, str]) -> dict:
+    trends = {}
+    datetime_cols = [col for col, col_type in column_types.items() if col_type == "datetime" and col in df.columns]
+    numeric_cols = [col for col, col_type in column_types.items() if col_type in ["numeric", "monetary"] and col in df.columns]
+    
+    for dt_col in datetime_cols:
+        for num_col in numeric_cols:
+            temp_df = df[[dt_col, num_col]].dropna().sort_values(by=dt_col)
+            if temp_df.empty:
+                continue
+                
+            temp_df[dt_col] = pd.to_datetime(temp_df[dt_col])
+            monthly = temp_df.set_index(dt_col).resample('M').sum()
+            
+            if len(monthly) >= 2:
+                first_month = monthly[num_col].iloc[0]
+                last_month = monthly[num_col].iloc[-1]
+                
+                if first_month > 0:
+                    growth = ((last_month - first_month) / first_month) * 100
+                    trends[f"{num_col} over time"] = {
+                        "direction": "Upwards" if growth > 0 else "Downwards",
+                        "overall_change_percent": round(growth, 1)
+                    }
+    return trends
+
 def link_related_charts(charts: list[dict], max_related: int = 3) -> list[dict]:
     linked_charts = copy.deepcopy(charts)
 
@@ -288,9 +342,6 @@ def link_related_charts(charts: list[dict], max_related: int = 3) -> list[dict]:
 
         current_chart["relatedLineCharts"] = related_pool
 
-        for sub_chart in current_chart["charts"]:
-            sub_chart["relatedLineCharts"] = related_pool
-
     return linked_charts
 
 def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
@@ -315,6 +366,9 @@ def analyze_csv(file_path: str, column_types: dict[str, str]) -> dict:
         "columnTypes": column_types,
         "missingValues": df.isnull().sum().to_dict(),
         "uniqueValues": {col: df[col].nunique() for col in df.columns},
+        "numericSummaries": get_numeric_summaries(df, column_types),
+        "categoricalSummaries": get_categorical_summaries(df, column_types),
+        "timeTrends": get_time_trends(df, column_types),
         "correlations": correlations,
         "charts": charts,
     }
