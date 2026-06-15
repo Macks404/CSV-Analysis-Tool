@@ -12,7 +12,6 @@ interface CSVAnalysis {
   charts?: ChartConfig[];
 }
 
-// Your new structured interface
 interface AISummaryData {
   summary: string;
   chartInsights: { chartName: string; insight: string }[];
@@ -25,7 +24,6 @@ function AnalyzePage() {
   const state = location.state;
 
   const analysis: CSVAnalysis = state.data.analysis;
-  // Strongly type the aiSummary instead of using 'any'
   const aiSummary: AISummaryData | undefined = state.data.aiSummary;
   const originalName: string = state.data.originalName;
 
@@ -33,111 +31,49 @@ function AnalyzePage() {
     <main className="container py-5">
       <div className="page-card rounded-5 p-4 p-md-5">
         {/* Header Section */}
-        <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
-          <div>
+        <div className="d-flex flex-column flex-md-row justify-content-between gap-4 mb-5">
+          <div className="flex-grow-1">
             <span className="badge rounded-pill text-bg-success mb-3">
               Step 3 of 3
             </span>
             <h1 className="h2 fw-bold mb-2">Analysis results</h1>
-            <p className="text-muted-soft mb-0">
+            <p className="text-muted-soft mb-4">
               Final overview of detected column types, missing values, and
               unique values.
             </p>
+
+            {/* AI Summary Integrated as Native Lead Text */}
+            {aiSummary?.summary && (
+              <div className="border-start border-4 border-primary ps-3 py-1">
+                <p className="lead fw-medium text-dark mb-0 text-size-lg">
+                  {aiSummary.summary}
+                </p>
+              </div>
+            )}
           </div>
-          <div className="text-md-end">
+
+          <div className="text-md-end flex-shrink-0">
             <p className="text-muted-soft small mb-1">File</p>
             <strong>{originalName}</strong>
           </div>
         </div>
 
-        {/* --- REFACTORED AI SUMMARY SECTION --- */}
-        {aiSummary && (
-          <div
-            className="info-callout mb-4 p-4 rounded-4"
-            style={{ backgroundColor: "rgba(var(--bs-primary-rgb), 0.05)" }}
-          >
-            <div className="d-flex align-items-center mb-3">
-              <span className="me-2 fs-5">✨</span>
-              <h2 className="h5 fw-bold mb-0 text-inherit">
-                Executive AI Summary
-              </h2>
-            </div>
-
-            {/* 1. The One-Sentence Summary */}
-            <p
-              className="lead mb-4"
-              style={{ opacity: 0.9, fontSize: "1.05rem" }}
-            >
-              {aiSummary.summary}
-            </p>
-
-            <div className="row g-4">
-              {/* 2. Chart Insights */}
-              <div className="col-lg-6">
-                <h3 className="h6 fw-bold mb-3 text-muted">KEY INSIGHTS</h3>
-                <div className="d-flex flex-column gap-3">
-                  {aiSummary.chartInsights.map((insight, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-3 rounded-3 shadow-sm"
-                    >
-                      <strong
-                        className="d-block mb-1 text-primary"
-                        style={{ fontSize: "0.9rem" }}
-                      >
-                        {insight.chartName}
-                      </strong>
-                      <span
-                        className="text-muted-soft"
-                        style={{ fontSize: "0.9rem" }}
-                      >
-                        {insight.insight}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 3. Improvement Tips */}
-              <div className="col-lg-6">
-                <h3 className="h6 fw-bold mb-3 text-muted">RECOMMENDATIONS</h3>
-                <ul className="list-group list-group-flush rounded-3 overflow-hidden shadow-sm">
-                  {aiSummary.improvementTips.map((tip, index) => (
-                    <li
-                      key={index}
-                      className="list-group-item bg-white d-flex align-items-start border-bottom-0 mb-1 rounded-3"
-                    >
-                      <span className="me-2 mt-1 text-success">✓</span>
-                      <span
-                        className="text-muted-soft"
-                        style={{ fontSize: "0.9rem" }}
-                      >
-                        {tip}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Feature Pills */}
-        <div className="row g-3 mb-4 mt-2">
+        <div className="row g-3 mb-5">
           <div className="col-md-4">
-            <div className="feature-pill rounded-4 p-3 h-100">
+            <div className="feature-pill rounded-4 p-3 h-100 bg-light">
               <p className="text-muted-soft small mb-1">Encoding</p>
               <strong>{analysis.encoding}</strong>
             </div>
           </div>
           <div className="col-md-4">
-            <div className="feature-pill rounded-4 p-3 h-100">
+            <div className="feature-pill rounded-4 p-3 h-100 bg-light">
               <p className="text-muted-soft small mb-1">Columns</p>
               <strong>{analysis.columns.length}</strong>
             </div>
           </div>
           <div className="col-md-4">
-            <div className="feature-pill rounded-4 p-3 h-100">
+            <div className="feature-pill rounded-4 p-3 h-100 bg-light">
               <p className="text-muted-soft small mb-1">Total missing values</p>
               <strong>
                 {Object.values(analysis.missingValues).reduce(
@@ -149,10 +85,52 @@ function AnalyzePage() {
           </div>
         </div>
 
-        {/* Charts */}
-        {analysis.charts?.map((chart) => (
-          <ChartRenderer key={chart.id} chart={chart} />
-        ))}
+        {/* Actionable Recommendations Integrated as Native UI */}
+        {aiSummary?.improvementTips && aiSummary.improvementTips.length > 0 && (
+          <div className="mb-5">
+            <h3 className="h6 fw-bold mb-3">ACTIONABLE RECOMMENDATIONS</h3>
+            <div className="row g-3">
+              {aiSummary.improvementTips.map((tip, index) => (
+                <div key={index} className="col-md-6">
+                  <div className="border rounded-4 p-3 h-100 d-flex align-items-start">
+                    <span className="me-3 text-primary mt-1">💡</span>
+                    <span className="text-dark text-size-sm">{tip}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Charts Section with Embedded Insights */}
+        <div>
+          <h3 className="h6 fw-bold mb-4 border-bottom pb-2">
+            DATA VISUALIZATIONS
+          </h3>
+          {analysis.charts?.map((chart) => {
+            // 1. Find the specific AI insight that matches this chart's title
+            const matchedInsight = aiSummary?.chartInsights?.find(
+              (insight) => insight.chartName === chart.title,
+            );
+
+            // 2. Clone the chart config and inject the AI insight as the description
+            const enhancedChartConfig = {
+              ...chart,
+              // If the AI generated an insight, use it. Otherwise, fall back to the original description.
+              description: matchedInsight
+                ? matchedInsight.insight
+                : chart.description,
+            };
+
+            // 3. Pass the freshly enhanced config down to your renderer
+            return (
+              <ChartRenderer
+                key={enhancedChartConfig.id}
+                chart={enhancedChartConfig}
+              />
+            );
+          })}
+        </div>
 
         {/* Footer */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-5 border-top pt-4">

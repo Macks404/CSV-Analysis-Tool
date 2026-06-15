@@ -36,7 +36,6 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
   let overlayData = null;
   let overlayTitle = "";
 
-  // Only one of these blocks is needed!
   if (overlayId) {
     const parentOverlayChart = relatedCharts.find((c) => c.id === overlayId);
     if (parentOverlayChart) {
@@ -56,10 +55,8 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
   if (overlayData) {
     const mergedMap = new Map();
 
-    // 1. Add all primary data points
     chartData.forEach((d) => mergedMap.set(d.x, d));
 
-    // 2. Add or update with overlay data points
     overlayData.data.forEach((d) => {
       if (mergedMap.has(d.x)) {
         mergedMap.get(d.x).overlay = d.y;
@@ -68,7 +65,6 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
       }
     });
 
-    // 3. Convert back to an array and sort by actual date time
     chartData = Array.from(mergedMap.values()).sort(
       (a, b) => new Date(a.x).getTime() - new Date(b.x).getTime(),
     );
@@ -76,63 +72,90 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
 
   return (
     <div className="page-card rounded-4 p-4 mb-4">
-      {/* Header section */}
-      <div className="mb-3 d-flex justify-content-between align-items-start">
-        <div>
-          <h2 className="h5 fw-bold mb-1">{chart.title}</h2>
-          <p className="text-muted-soft mb-2">{chart.description}</p>
+      {/* Refactored Header Layout */}
+      <div className="mb-4">
+        {/* Top Row: Title and Timeframe Toggles */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+          <h2 className="h5 fw-bold mb-0">{chart.title}</h2>
 
-          {/* Compare/Overlay Dropdown */}
-          {relatedCharts.length > 0 && (
+          {chart.charts.length > 1 && (
+            <div className="btn-group shadow-sm">
+              {chart.charts.map((subChart, index) => (
+                <button
+                  key={index}
+                  className={`btn btn-sm ${
+                    activeIndex === index
+                      ? "btn-primary"
+                      : "btn-outline-primary"
+                  }`}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  {subChart.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Elevated AI Insight Block (Matches Bar Chart) */}
+        {chart.description && (
+          <div className="border-start border-3 border-primary ps-3 py-2 bg-light rounded-end pe-3 mb-3">
+            <p className="text-muted mb-0 insight-description">
+              {chart.description}
+            </p>
+          </div>
+        )}
+
+        {/* Bottom Row: Compare Overlay Dropdown */}
+        {relatedCharts.length > 0 && (
+          <div className="d-flex align-items-center bg-light p-2 rounded-3 d-inline-flex border">
+            <label className="text-muted-soft small me-2 mb-0 fw-medium">
+              Overlay:
+            </label>
             <select
-              className="form-select form-select-sm w-auto mt-2"
+              className="form-select form-select-sm border-0 bg-transparent py-0 pe-4 shadow-none text-primary fw-medium"
+              style={{ cursor: "pointer" }}
               value={overlayId || ""}
               onChange={(e) => setOverlayId(e.target.value || null)}
             >
-              <option value="">Compare with...</option>
+              <option value="">None</option>
               {relatedCharts.map((rc) => (
                 <option key={rc.id} value={rc.id}>
                   {rc.title}
                 </option>
               ))}
             </select>
-          )}
-        </div>
-
-        {/* Timeframe Toggles */}
-        {chart.charts.length > 1 && (
-          <div className="btn-group">
-            {chart.charts.map((subChart, index) => (
-              <button
-                key={index}
-                className={`btn btn-sm ${
-                  activeIndex === index ? "btn-primary" : "btn-outline-primary"
-                }`}
-                onClick={() => setActiveIndex(index)}
-              >
-                {subChart.name}
-              </button>
-            ))}
           </div>
         )}
       </div>
 
-      <div style={{ width: "100%", height: 360 }}>
-        <ResponsiveContainer>
+      {/* Refactored Recharts Container using CSS utility class */}
+      <div className="chart-wrapper">
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 5, right: 5, bottom: 30, left: 20 }}
+            margin={{ top: 10, right: 10, bottom: 30, left: 20 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="#E5E7EB"
+            />
+
             <XAxis
               dataKey="x"
               name={activeData.xColumn}
               tickFormatter={dateFormatter}
               minTickGap={30}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#6B7280", fontSize: 12 }}
               label={{
                 value: activeData.xColumn,
                 position: "bottom",
                 dy: 10,
+                fill: "#9CA3AF",
+                fontSize: 14,
               }}
             />
 
@@ -140,11 +163,16 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
               yAxisId="left"
               dataKey="primary"
               name={activeData.yColumn}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#6B7280", fontSize: 12 }}
               label={{
                 value: activeData.yColumn,
                 angle: -90,
                 position: "insideLeft",
                 dy: 40,
+                fill: "#9CA3AF",
+                fontSize: 14,
               }}
             />
 
@@ -154,21 +182,35 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
                 orientation="right"
                 dataKey="overlay"
                 name={overlayData.yColumn}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: "#6B7280", fontSize: 12 }}
                 label={{
                   value: overlayData.yColumn,
                   angle: 90,
                   position: "insideRight",
                   dy: 40,
+                  fill: "#9CA3AF",
+                  fontSize: 14,
                 }}
               />
             )}
 
             <Tooltip
               labelFormatter={dateFormatter}
-              cursor={{ strokeDasharray: "3 3" }}
+              cursor={{
+                stroke: "#9CA3AF",
+                strokeWidth: 1,
+                strokeDasharray: "3 3",
+              }}
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+              }}
             />
 
-            <Legend verticalAlign="top" height={36} />
+            <Legend verticalAlign="top" height={36} iconType="circle" />
 
             <Line
               yAxisId="left"
@@ -176,8 +218,9 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
               dataKey="primary"
               name={chart.title}
               dot={false}
+              activeDot={{ r: 6, strokeWidth: 0, fill: "#008fd0" }}
               stroke="#008fd0"
-              strokeWidth={2}
+              strokeWidth={3}
             />
 
             {overlayData && (
@@ -187,8 +230,9 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
                 dataKey="overlay"
                 name={overlayTitle}
                 dot={false}
+                activeDot={{ r: 6, strokeWidth: 0, fill: "#ff7300" }}
                 stroke="#ff7300"
-                strokeWidth={2}
+                strokeWidth={3}
               />
             )}
           </LineChart>

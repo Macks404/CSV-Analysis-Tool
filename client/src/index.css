@@ -1,13 +1,14 @@
+/* Base Body - Darkened text and softened the background glare */
 body {
   min-height: 100vh;
   background:
     radial-gradient(
       circle at top left,
-      rgba(13, 110, 253, 0.12),
+      rgba(13, 110, 253, 0.08),
       transparent 32%
     ),
     linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-  color: #0f172a;
+  color: #020617; /* Shifted to near-black for maximum contrast */
 }
 
 .app-shell {
@@ -16,14 +17,14 @@ body {
 
 .page-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1; /* Slightly darker card border */
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
 }
 
 .drop-zone-light {
   min-height: 380px;
   cursor: pointer;
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed #94a3b8; /* Darkened dashed border */
   background: #f8fafc;
   transition:
     border-color 0.2s ease,
@@ -45,23 +46,44 @@ body {
   box-shadow: 0 16px 40px rgba(13, 110, 253, 0.12);
 }
 
+/* --- TEXT READABILITY UPGRADES --- */
+
+/* Replaced #64748b with #334155 (Slate 700) for excellent contrast */
 .text-muted-soft {
-  color: #64748b;
+  color: #334155 !important;
 }
+
+.text-size-lg {
+  font-size: 1.1rem;
+  color: #0f172a;
+}
+
+.text-size-sm {
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.insight-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #334155 !important;
+}
+
+/* --- UI COMPONENTS --- */
 
 .feature-pill {
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1; /* Darkened border */
 }
 
 .nav-minimal-link {
-  color: #64748b;
+  color: #475569; /* Darkened link default */
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600; /* Bumped weight for legibility */
 }
 
 .nav-minimal-link:hover {
-  color: #0f172a;
+  color: #020617;
 }
 
 .nav-minimal-link.active {
@@ -69,17 +91,17 @@ body {
 }
 
 .analysis-table {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
   border-radius: 16px;
   overflow: hidden;
 }
 
 .analysis-table thead th {
-  background: #f8fafc;
-  color: #334155;
+  background: #f1f5f9; /* Slightly darker header background */
+  color: #1e293b; /* Darkened header text */
   font-size: 0.875rem;
   font-weight: 700;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #cbd5e1;
 }
 
 .analysis-table tbody td {
@@ -102,12 +124,31 @@ body {
 
 .analysis-select {
   background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #94a3b8; /* Darkened dropdown border */
   color: #0f172a;
   border-radius: 10px;
+  font-weight: 500;
 }
 
 .analysis-select:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 360px;
+}
+
+/* --- RECHARTS ACCESSIBILITY OVERRIDE --- */
+/* This safely forces all SVG chart labels to a readable dark slate, 
+   overriding the light #9CA3AF inline fill we previously applied. */
+.recharts-text {
+  fill: #475569 !important;
+  font-weight: 500;
+}
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #cbd5e1 !important; /* Slightly darker grid lines */
 }
