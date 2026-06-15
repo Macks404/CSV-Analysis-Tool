@@ -31,7 +31,7 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
   if (!chart.charts || chart.charts.length === 0) return null;
 
   const activeData = chart.charts[activeIndex];
-  const relatedCharts = activeData.relatedLineCharts || [];
+  const relatedCharts = chart.relatedLineCharts || [];
 
   let overlayData = null;
   let overlayTitle = "";

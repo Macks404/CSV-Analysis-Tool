@@ -286,6 +286,8 @@ def link_related_charts(charts: list[dict], max_related: int = 3) -> list[dict]:
 
         related_pool = related_pool[:max_related]
 
+        current_chart["relatedLineCharts"] = related_pool
+
         for sub_chart in current_chart["charts"]:
             sub_chart["relatedLineCharts"] = related_pool
 
