@@ -27,6 +27,8 @@ function AnalyzePage() {
   const aiSummary: AISummaryData | undefined = state.data.aiSummary;
   const originalName: string = state.data.originalName;
 
+  console.log(aiSummary);
+
   return (
     <main className="container py-5">
       <div className="page-card rounded-5 p-4 p-md-5">
