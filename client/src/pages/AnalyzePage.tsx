@@ -49,7 +49,6 @@ function AnalyzePage() {
               unique values.
             </p>
 
-            {/* AI Summary Integrated as Native Lead Text */}
             {aiSummary?.summary && (
               <div className="border-start border-4 border-primary ps-3 py-1">
                 <p className="lead fw-medium text-dark mb-0 text-size-lg">
@@ -65,7 +64,6 @@ function AnalyzePage() {
           </div>
         </div>
 
-        {/* Feature Pills */}
         <div className="row g-3 mb-5">
           <div className="col-md-4">
             <div className="feature-pill rounded-4 p-3 h-100 bg-light">
@@ -92,7 +90,6 @@ function AnalyzePage() {
           </div>
         </div>
 
-        {/* Actionable Recommendations Integrated as Native UI */}
         {aiSummary?.improvementTips && aiSummary.improvementTips.length > 0 && (
           <div className="mb-5">
             <h3 className="h6 fw-bold mb-3">ACTIONABLE RECOMMENDATIONS</h3>
@@ -109,27 +106,22 @@ function AnalyzePage() {
           </div>
         )}
 
-        {/* Charts Section with Embedded Insights */}
         <div>
           <h3 className="h6 fw-bold mb-4 border-bottom pb-2">
             DATA VISUALIZATIONS
           </h3>
           {analysis.charts?.map((chart) => {
-            // 1. Find the specific AI insight that matches this chart's title
             const matchedInsight = aiSummary?.chartInsights?.find(
               (insight) => insight.chartName === chart.title,
             );
 
-            // 2. Clone the chart config and inject the AI insight as the description
             const enhancedChartConfig = {
               ...chart,
-              // If the AI generated an insight, use it. Otherwise, fall back to the original description.
               description: matchedInsight
                 ? matchedInsight.insight
                 : chart.description,
             };
 
-            // 3. Pass the freshly enhanced config down to your renderer
             return (
               <ChartRenderer
                 key={enhancedChartConfig.id}
@@ -139,16 +131,22 @@ function AnalyzePage() {
           })}
         </div>
 
-        {/* Footer */}
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-5 border-top pt-4">
-          <p className="text-muted-soft small mb-0">
-            Need to correct a detected column type?
-          </p>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 mt-5 border-top pt-4">
+          <div>
+            <h4 className="h6 fw-bold mb-1 text-dark">
+              Need to adjust your data?
+            </h4>
+            <p className="text-muted-soft small mb-0">
+              Go back to the overview step to fix incorrect column types or
+              adjust settings.
+            </p>
+          </div>
+
           <button
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary px-4 py-2 fw-bold shadow-sm flex-shrink-0 rounded-pill"
             onClick={() => navigate(-1)}
           >
-            Made a mistake? Go back
+            ← Back to Data Overview
           </button>
         </div>
       </div>

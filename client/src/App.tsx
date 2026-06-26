@@ -9,7 +9,7 @@ import { SignedIn, SignedOut } from "@clerk/clerk-react";
 
 function App() {
   return (
-    <div className="app-shell">
+    <>
       <Navbar />
 
       <Routes>
@@ -59,7 +59,7 @@ function App() {
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </div>
+    </>
   );
 }
 

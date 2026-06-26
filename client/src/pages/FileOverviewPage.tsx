@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate, Navigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 interface ColumnAnalysis {
   columnTypes: Record<string, string>;
@@ -19,15 +20,23 @@ function FileOverviewPage() {
 
   const navigate = useNavigate();
   const [columnTypes, setColumnTypes] = useState(analysis.columnTypes);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const { getToken } = useAuth();
 
   async function handleContinue() {
+    setIsAnalyzing(true);
+
     try {
       const formData = new FormData();
       formData.append("csv", state.file);
       formData.append("columnTypes", JSON.stringify(columnTypes));
 
+      const token = await getToken();
+
       const response = await fetch("/api/upload/analyse", {
         method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
       const data = await response.json();
@@ -35,6 +44,8 @@ function FileOverviewPage() {
       navigate("/analysis", { state: { data } });
     } catch (error) {
       console.error("Error during analysis:", error);
+    } finally {
+      setIsAnalyzing(false);
     }
   }
 
@@ -115,8 +126,12 @@ function FileOverviewPage() {
             analysis.
           </p>
 
-          <button className="btn btn-primary px-4" onClick={handleContinue}>
-            Continue analysis
+          <button
+            className="btn btn-primary px-4"
+            onClick={handleContinue}
+            disabled={isAnalyzing}
+          >
+            {isAnalyzing ? "Analysing..." : "Continue analysis"}
           </button>
         </div>
       </div>

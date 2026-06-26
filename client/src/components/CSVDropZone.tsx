@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 function CSVDropZone() {
   const [message, setMessage] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const { getToken } = useAuth();
 
   async function handleFile(file: File | null) {
     if (!file || !file.name.toLowerCase().endsWith(".csv")) {
@@ -20,8 +23,13 @@ function CSVDropZone() {
     formData.append("csv", file);
 
     try {
+      const token = await getToken();
+
       const response = await fetch("/api/upload/detect-columns", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
