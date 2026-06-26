@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import ChartRenderer from "../components/charts/ChartRenderer";
 import type { ChartConfig } from "../components/charts/chartTypes";
 
@@ -20,6 +20,11 @@ interface AISummaryData {
 
 function AnalyzePage() {
   const location = useLocation();
+
+  if (!location.state) {
+    return <Navigate to="/upload" replace />;
+  }
+
   const navigate = useNavigate();
   const state = location.state;
 

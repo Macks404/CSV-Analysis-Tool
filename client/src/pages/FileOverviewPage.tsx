@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 interface ColumnAnalysis {
   columnTypes: Record<string, string>;
@@ -9,6 +9,11 @@ interface ColumnAnalysis {
 
 function FileOverviewPage() {
   const location = useLocation();
+
+  if (!location.state) {
+    return <Navigate to="/upload" replace />;
+  }
+
   const state = location.state;
   const analysis: ColumnAnalysis = state.data.analysis;
 

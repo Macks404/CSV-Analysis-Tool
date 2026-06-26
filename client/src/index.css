@@ -1,4 +1,3 @@
-/* Base Body - Darkened text and softened the background glare */
 body {
   min-height: 100vh;
   background:
@@ -8,7 +7,7 @@ body {
       transparent 32%
     ),
     linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-  color: #020617; /* Shifted to near-black for maximum contrast */
+  color: #020617;
 }
 
 .app-shell {
@@ -17,14 +16,14 @@ body {
 
 .page-card {
   background: #ffffff;
-  border: 1px solid #cbd5e1; /* Slightly darker card border */
+  border: 1px solid #cbd5e1;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
 }
 
 .drop-zone-light {
   min-height: 380px;
   cursor: pointer;
-  border: 2px dashed #94a3b8; /* Darkened dashed border */
+  border: 2px dashed #94a3b8;
   background: #f8fafc;
   transition:
     border-color 0.2s ease,
@@ -46,9 +45,6 @@ body {
   box-shadow: 0 16px 40px rgba(13, 110, 253, 0.12);
 }
 
-/* --- TEXT READABILITY UPGRADES --- */
-
-/* Replaced #64748b with #334155 (Slate 700) for excellent contrast */
 .text-muted-soft {
   color: #334155 !important;
 }
@@ -69,17 +65,15 @@ body {
   color: #334155 !important;
 }
 
-/* --- UI COMPONENTS --- */
-
 .feature-pill {
   background: #f8fafc;
-  border: 1px solid #cbd5e1; /* Darkened border */
+  border: 1px solid #cbd5e1;
 }
 
 .nav-minimal-link {
-  color: #475569; /* Darkened link default */
+  color: #475569;
   text-decoration: none;
-  font-weight: 600; /* Bumped weight for legibility */
+  font-weight: 600;
 }
 
 .nav-minimal-link:hover {
@@ -97,8 +91,8 @@ body {
 }
 
 .analysis-table thead th {
-  background: #f1f5f9; /* Slightly darker header background */
-  color: #1e293b; /* Darkened header text */
+  background: #f1f5f9;
+  color: #1e293b;
   font-size: 0.875rem;
   font-weight: 700;
   border-bottom: 1px solid #cbd5e1;
@@ -124,7 +118,7 @@ body {
 
 .analysis-select {
   background-color: #ffffff;
-  border: 1px solid #94a3b8; /* Darkened dropdown border */
+  border: 1px solid #94a3b8;
   color: #0f172a;
   border-radius: 10px;
   font-weight: 500;
@@ -140,9 +134,6 @@ body {
   height: 360px;
 }
 
-/* --- RECHARTS ACCESSIBILITY OVERRIDE --- */
-/* This safely forces all SVG chart labels to a readable dark slate, 
-   overriding the light #9CA3AF inline fill we previously applied. */
 .recharts-text {
   fill: #475569 !important;
   font-weight: 500;
@@ -151,4 +142,67 @@ body {
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
   stroke: #cbd5e1 !important; /* Slightly darker grid lines */
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #0d6efd 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-badge {
+  background: #eff6ff;
+  color: #0d6efd;
+  border: 1px solid #bfdbfe;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 50rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
+  color: #0d6efd;
+  border: 2px solid #bfdbfe;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.feature-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: #f1f7ff;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  font-size: 1.75rem;
+}
+
+.transition-up {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.transition-up:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 32px 64px rgba(15, 23, 42, 0.12);
+  border-color: #94a3b8;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
 }

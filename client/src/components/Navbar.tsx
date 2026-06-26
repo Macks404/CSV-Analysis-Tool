@@ -1,35 +1,35 @@
 import { Link, NavLink } from "react-router-dom";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 function Navbar() {
-  const isLoggedIn = false;
-
   return (
-    <header className="py-3">
+    <header className="py-3 border-bottom bg-white shadow-sm">
       <div className="container d-flex justify-content-between align-items-center">
-        <Link to="/" className="text-decoration-none fw-bold text-dark">
+        <Link to="/" className="text-decoration-none fw-bold text-dark fs-5">
           CSV Insight
         </Link>
 
         <nav className="d-flex align-items-center gap-4 small">
-          <NavLink to="/upload" className="nav-minimal-link">
-            Upload
-          </NavLink>
-
-          {isLoggedIn && (
+          <SignedIn>
             <NavLink to="/analysis-history" className="nav-minimal-link">
               History
             </NavLink>
-          )}
 
-          {isLoggedIn ? (
-            <NavLink to="/account" className="nav-minimal-link">
-              Account
-            </NavLink>
-          ) : (
-            <NavLink to="/login" className="nav-minimal-link">
-              Log in
-            </NavLink>
-          )}
+            <UserButton />
+          </SignedIn>
+
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="btn btn-primary btn-sm px-4 fw-bold">
+                Log in
+              </button>
+            </SignInButton>
+          </SignedOut>
         </nav>
       </div>
     </header>

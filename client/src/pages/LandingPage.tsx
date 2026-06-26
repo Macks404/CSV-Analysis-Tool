@@ -1,107 +1,113 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { SignUpButton, useAuth } from "@clerk/clerk-react";
 
 function LandingPage() {
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate("/upload");
+    }
+  }, [isSignedIn, navigate]);
+
   return (
-    <main className="app-shell">
+    <main className="app-shell d-flex align-items-center">
       <section className="container py-5">
-        <div className="row align-items-center justify-content-center min-vh-100">
-          <div className="col-lg-10">
-            <div className="page-card rounded-5 p-4 p-md-5">
+        <div className="row justify-content-center">
+          <div className="col-xl-11">
+            <div className="page-card rounded-5 p-4 p-md-5 mb-5 shadow-sm">
               <div className="row align-items-center g-5">
                 <div className="col-lg-7">
-                  <span className="badge rounded-pill text-bg-primary mb-3 px-3 py-2">
-                    CSV Analysis Tool
-                  </span>
+                  <div className="hero-badge mb-4 shadow-sm">
+                    Professional CSV Analysis
+                  </div>
 
-                  <h1 className="display-4 fw-bold mb-4">
-                    Turn messy CSV files into clear, useful insights.
+                  <h1
+                    className="display-4 fw-bold mb-4"
+                    style={{ color: "#020617" }}
+                  >
+                    Turn messy data into{" "}
+                    <span className="text-gradient-primary">
+                      clear insights.
+                    </span>
                   </h1>
 
-                  <p className="lead text-muted-soft mb-4">
-                    Upload a CSV file, review detected column types, and
-                    generate a clean overview of missing values, unique values,
-                    duplicates, and data quality issues.
+                  <p className="text-size-lg text-muted-soft mb-5 pe-lg-4">
+                    Upload your raw CSV files to automatically generate
+                    interactive charts, detect data quality issues, and receive
+                    an Executive AI Summary to drive your business forward.
                   </p>
 
                   <div className="d-flex flex-column flex-sm-row gap-3">
-                    <Link to="/upload" className="btn btn-primary btn-lg px-4">
-                      Upload CSV
-                    </Link>
+                    <SignUpButton mode="modal">
+                      <button className="btn btn-primary btn-lg px-5 shadow-sm fw-bold">
+                        Get Started for Free
+                      </button>
+                    </SignUpButton>
 
                     <a
                       href="#features"
-                      className="btn btn-outline-secondary btn-lg px-4"
+                      className="btn btn-outline-secondary btn-lg px-5 fw-bold"
                     >
-                      See features
+                      How it works
                     </a>
                   </div>
                 </div>
 
                 <div className="col-lg-5">
-                  <div className="feature-pill rounded-5 p-4">
-                    <h2 className="h5 fw-bold mb-3">What it checks</h2>
-
-                    <div className="d-grid gap-3">
-                      <div className="d-flex justify-content-between border-bottom pb-2">
-                        <span>Column types</span>
-                        <strong>Auto-detected</strong>
+                  <div className="feature-pill rounded-5 p-4 shadow-sm">
+                    <div className="d-flex flex-column gap-3">
+                      <div className="info-callout d-flex align-items-center p-3 m-0 shadow-sm">
+                        <div className="step-number me-3">1</div>
+                        <div>
+                          <strong
+                            className="d-block"
+                            style={{ color: "#0f172a" }}
+                          >
+                            Smart Data Cleaning
+                          </strong>
+                          <span className="text-size-sm text-muted-soft">
+                            Fixes dates, nulls & duplicates
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="d-flex justify-content-between border-bottom pb-2">
-                        <span>Missing values</span>
-                        <strong>Counted</strong>
+                      <div className="info-callout d-flex align-items-center p-3 m-0 shadow-sm">
+                        <div className="step-number me-3">2</div>
+                        <div>
+                          <strong
+                            className="d-block"
+                            style={{ color: "#0f172a" }}
+                          >
+                            Interactive Charts
+                          </strong>
+                          <span className="text-size-sm text-muted-soft">
+                            Easy viewing of trends
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="d-flex justify-content-between border-bottom pb-2">
-                        <span>Duplicate rows</span>
-                        <strong>Cleaned</strong>
-                      </div>
-
-                      <div className="d-flex justify-content-between">
-                        <span>Uploaded files</span>
-                        <strong>Temporary</strong>
+                      <div className="info-callout d-flex align-items-center p-3 m-0 shadow-sm">
+                        <div className="step-number me-3">3</div>
+                        <div>
+                          <strong
+                            className="d-block"
+                            style={{ color: "#0f172a" }}
+                          >
+                            Business Strategy
+                          </strong>
+                          <span className="text-size-sm text-muted-soft">
+                            Qualitative insights and suggestions
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div id="features" className="row g-3 mt-5">
-                <div className="col-md-4">
-                  <div className="feature-pill rounded-4 p-3 h-100">
-                    <strong>Smart type detection</strong>
-                    <p className="text-muted-soft small mb-0">
-                      Detects numeric, monetary, datetime, categorical, boolean,
-                      and text columns.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="feature-pill rounded-4 p-3 h-100">
-                    <strong>Editable review step</strong>
-                    <p className="text-muted-soft small mb-0">
-                      Correct detected column types before generating the final
-                      analysis.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="feature-pill rounded-4 p-3 h-100">
-                    <strong>Privacy-aware flow</strong>
-                    <p className="text-muted-soft small mb-0">
-                      Files are processed temporarily and deleted after
-                      analysis.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
-
-            <p className="text-center text-muted-soft small mt-4 mb-0">
-              Built with React, Express, TypeScript, Python, and pandas.
-            </p>
           </div>
         </div>
       </section>
