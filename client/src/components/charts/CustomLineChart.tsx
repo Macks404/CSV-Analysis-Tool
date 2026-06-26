@@ -79,7 +79,7 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
           <h2 className="h5 fw-bold mb-0">{chart.title}</h2>
 
           {chart.charts.length > 1 && (
-            <div className="btn-group shadow-sm">
+            <div className="btn-group shadow-sm d-print-none">
               {chart.charts.map((subChart, index) => (
                 <button
                   key={index}
@@ -97,7 +97,6 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
           )}
         </div>
 
-        {/* Elevated AI Insight Block (Matches Bar Chart) */}
         {chart.description && (
           <div className="border-start border-3 border-primary ps-3 py-2 bg-light rounded-end pe-3 mb-3">
             <p className="text-muted mb-0 insight-description">
@@ -106,9 +105,8 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
           </div>
         )}
 
-        {/* Bottom Row: Compare Overlay Dropdown */}
         {relatedCharts.length > 0 && (
-          <div className="d-flex align-items-center bg-light p-2 rounded-3 d-inline-flex border">
+          <div className="d-flex align-items-center bg-light p-2 rounded-3 d-inline-flex border d-print-none">
             <label className="text-muted-soft small me-2 mb-0 fw-medium">
               Overlay:
             </label>

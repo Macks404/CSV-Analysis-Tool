@@ -16,10 +16,6 @@ function Navbar() {
 
         <nav className="d-flex align-items-center gap-4 small">
           <SignedIn>
-            <NavLink to="/analysis-history" className="nav-minimal-link">
-              History
-            </NavLink>
-
             <UserButton />
           </SignedIn>
 

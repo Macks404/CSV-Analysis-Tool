@@ -131,7 +131,7 @@ function FileOverviewPage() {
             onClick={handleContinue}
             disabled={isAnalyzing}
           >
-            {isAnalyzing ? "Analysing..." : "Continue analysis"}
+            {isAnalyzing ? "Analyzing..." : "Continue analysis"}
           </button>
         </div>
       </div>
