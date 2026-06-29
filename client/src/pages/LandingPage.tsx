@@ -46,13 +46,6 @@ function LandingPage() {
                         Get Started for Free
                       </button>
                     </SignUpButton>
-
-                    <a
-                      href="#features"
-                      className="btn btn-outline-secondary btn-lg px-5 fw-bold"
-                    >
-                      How it works
-                    </a>
                   </div>
                 </div>
 
