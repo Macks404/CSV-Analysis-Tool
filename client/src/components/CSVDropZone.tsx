@@ -22,7 +22,7 @@ function CSVDropZone() {
     const formData = new FormData();
     formData.append("csv", file);
 
-    const API_BASE_URL = import.meta.env.VITE_APP_URL || "";
+    //const API_BASE_URL = import.meta.env.VITE_APP_URL || "";
 
     try {
       const token = await getToken();
