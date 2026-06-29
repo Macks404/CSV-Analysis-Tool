@@ -7,6 +7,7 @@ export function executePythonScript(
   columnTypes?: Record<string, string>,
 ): Promise<unknown> {
   return new Promise((resolve, reject) => {
+    // This perfectly matches your Docker folder structure (/app/server and /app/python)
     const scriptPath = path.resolve(`../python/${scriptName}.py`);
 
     let output = "";
@@ -17,7 +18,10 @@ export function executePythonScript(
       args.push(JSON.stringify(columnTypes));
     }
 
-    const pythonProcess = spawn("python", args);
+    // Automatically use "python" on Windows, and "python3" on Mac/Linux/Render
+    const pythonExecutable =
+      process.platform === "win32" ? "python" : "python3";
+    const pythonProcess = spawn(pythonExecutable, args);
 
     pythonProcess.stdout.on("data", (data) => {
       output += data.toString();
