@@ -72,9 +72,7 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
 
   return (
     <div className="page-card rounded-4 p-4 mb-4">
-      {/* Refactored Header Layout */}
       <div className="mb-4">
-        {/* Top Row: Title and Timeframe Toggles */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
           <h2 className="h5 fw-bold mb-0">{chart.title}</h2>
 
@@ -127,7 +125,6 @@ function CustomLineChart({ chart }: { chart: LineChartType }) {
         )}
       </div>
 
-      {/* Refactored Recharts Container using CSS utility class */}
       <div className="chart-wrapper">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart

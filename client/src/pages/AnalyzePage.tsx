@@ -116,7 +116,6 @@ function AnalyzePage() {
               </div>
             )}
 
-          {/* Added force-new-page to push all charts to Page 2 */}
           <div className="force-new-page">
             <h3 className="h6 fw-bold mb-4 border-bottom pb-2">
               DATA VISUALIZATIONS

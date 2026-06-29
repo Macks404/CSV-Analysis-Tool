@@ -81,23 +81,19 @@ router.post(
         columnTypes = JSON.parse(req.body.columnTypes);
       }
 
-      // 2. Get the heavy data from Python
       const analysis = await executePythonScript(
         "analyze_csv",
         req.file.path,
         columnTypes,
       );
 
-      // 3. Generate the AI Summary using the skinny payload
-      // We await this so it finishes before we send the response
       const aiSummary = await generateAIAnalysis(analysis);
 
-      // 4. Return everything to the frontend!
       return res.json({
         message: "CSV uploaded successfully",
         originalName: req.file.originalname,
         analysis: analysis,
-        aiSummary: aiSummary, // <-- Attach the markdown string here
+        aiSummary: aiSummary,
       });
     } catch (err: unknown) {
       return res.status(500).json({

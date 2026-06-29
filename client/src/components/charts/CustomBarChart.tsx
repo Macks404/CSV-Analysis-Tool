@@ -16,7 +16,6 @@ function CustomBarChart({ chart }: { chart: BarChartData }) {
       <div className="mb-4">
         <h2 className="h5 fw-bold mb-3">{chart.title}</h2>
 
-        {/* Elevated Description / Insight Block using new CSS class */}
         {chart.description && (
           <div className="border-start border-3 border-primary ps-3 py-2 bg-light rounded-end pe-3">
             <p className="text-muted mb-0 insight-description">
@@ -26,7 +25,6 @@ function CustomBarChart({ chart }: { chart: BarChartData }) {
         )}
       </div>
 
-      {/* Recharts Container using new CSS class */}
       <div className="chart-wrapper">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
