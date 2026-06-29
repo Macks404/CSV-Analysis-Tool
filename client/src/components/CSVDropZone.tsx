@@ -28,7 +28,7 @@ function CSVDropZone() {
       const token = await getToken();
 
       const response = await fetch(
-        `${API_BASE_URL}/api/upload/detect-columns`,
+        `https://csv-analysis-tool.onrender.com/api/upload/detect-columns`,
         {
           method: "POST",
           headers: {

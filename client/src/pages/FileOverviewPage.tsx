@@ -36,11 +36,14 @@ function FileOverviewPage() {
 
       const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
-      const response = await fetch(`${API_BASE_URL}/api/upload/analyse`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+      const response = await fetch(
+        `https://csv-analysis-tool.onrender.com/api/upload/analyse`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        },
+      );
       const data = await response.json();
 
       navigate("/analysis", { state: { data } });
