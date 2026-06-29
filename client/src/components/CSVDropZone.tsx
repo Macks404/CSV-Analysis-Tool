@@ -22,16 +22,21 @@ function CSVDropZone() {
     const formData = new FormData();
     formData.append("csv", file);
 
+    const API_BASE_URL = import.meta.env.VITE_APP_URL || "";
+
     try {
       const token = await getToken();
 
-      const response = await fetch("/api/upload/detect-columns", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${API_BASE_URL}/api/upload/detect-columns`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         },
-        body: formData,
-      });
+      );
 
       const data = await response.json();
 

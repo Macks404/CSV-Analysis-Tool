@@ -34,7 +34,9 @@ function FileOverviewPage() {
 
       const token = await getToken();
 
-      const response = await fetch("/api/upload/analyse", {
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+
+      const response = await fetch(`${API_BASE_URL}/api/upload/analyse`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
