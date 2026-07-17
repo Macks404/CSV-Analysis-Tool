@@ -143,9 +143,9 @@ function CSVDropZone() {
 
                 <div className="col-md-4">
                   <div className="feature-pill rounded-4 p-3 h-100">
-                    <strong>Quality checks</strong>
+                    <strong>Column overview</strong>
                     <p className="text-muted-soft small mb-0">
-                      Highlights missing values, duplicates, and messy columns.
+                      See all detected columns with duplicates erased.
                     </p>
                   </div>
                 </div>
