@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String     @id
+  email     String     @unique
+  analyses  Analysis[]
+  createdAt DateTime   @default(now())
+  viewedAt  DateTime   @default(now())
+}
+
+model Analysis {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  fileName    String
+  summaryText String   @db.Text
+  chartData   Json?    
+  createdAt   DateTime @default(now())
+}

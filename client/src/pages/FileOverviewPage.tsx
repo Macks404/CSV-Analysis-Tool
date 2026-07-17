@@ -37,7 +37,7 @@ function FileOverviewPage() {
       //const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
       const response = await fetch(
-        `https://csv-analysis-tool.onrender.com/api/upload/analyse`,
+        `${import.meta.env.VITE_API_URL}/api/upload/analyse`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },

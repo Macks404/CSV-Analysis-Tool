@@ -8,6 +8,7 @@ import { executePythonScript } from "../services/pythonAnalysisService.js";
 import { generateAIAnalysis } from "../services/generateAIAnalysis.js";
 import fs from "fs/promises";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import prisma from "../prismaClient.js";
 
 const router = Router();
 
@@ -88,6 +89,36 @@ router.post(
       );
 
       const aiSummary = await generateAIAnalysis(analysis);
+
+      // save results to db
+      const auth = (req as any).auth;
+      const userId = auth?.userId;
+
+      if (userId) {
+        const userEmail =
+          auth?.claims?.email || `${userId}@clerk-placeholder.com`;
+
+        await prisma.user.upsert({
+          where: { id: userId },
+          update: {},
+          create: {
+            id: userId,
+            email: userEmail,
+          },
+        });
+
+        await prisma.analysis.create({
+          data: {
+            userId: userId,
+            fileName: req.file.originalname,
+            summaryText:
+              typeof aiSummary === "string"
+                ? aiSummary
+                : JSON.stringify(aiSummary),
+            chartData: analysis as any,
+          },
+        });
+      }
 
       return res.json({
         message: "CSV uploaded successfully",
