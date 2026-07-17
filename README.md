@@ -19,3 +19,6 @@ In this project, I faced many challenges, which included:<br>
 - Managing a large project on my own<br>
 - Strictness of TypeScript<br>
 - Ensuring no user data is ever stored server-side for longer than necessary<br>
+
+AI USAGE DISCLAIMER:
+AI was used to help in creating the website's visuals and plays no part in any functionality of the website.
