@@ -16,9 +16,14 @@ function Navbar() {
 
         <nav className="d-flex align-items-center gap-4 small">
           <SignedIn>
+            <Link
+              to="/history"
+              className="text-decoration-none text-dark fw-medium"
+            >
+              History
+            </Link>
             <UserButton />
           </SignedIn>
-
           <SignedOut>
             <SignInButton mode="modal">
               <button className="btn btn-primary btn-sm px-4 fw-bold">

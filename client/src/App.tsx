@@ -3,6 +3,7 @@ import UploadPage from "./pages/UploadPage.tsx";
 import AnalyzePage from "./pages/AnalyzePage.tsx";
 import FileOverviewPage from "./pages/FileOverviewPage.tsx";
 import PageNotFound from "./pages/PageNotFound.tsx";
+import HistoryPage from "./pages/HistoryPage.tsx";
 import Navbar from "./components/Navbar.tsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
@@ -57,6 +58,7 @@ function App() {
           }
         />
 
+        <Route path="/history" element={<HistoryPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>

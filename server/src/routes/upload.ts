@@ -139,4 +139,20 @@ router.post(
   },
 );
 
+router.get("/history", ClerkExpressRequireAuth() as any, async (req, res) => {
+  try {
+    //@ts-ignore
+    const userId = req.auth.userId;
+
+    const analyses = await prisma.analysis.findMany({
+      where: { userId: userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return res.json(analyses);
+  } catch (err: unknown) {
+    return res.status(500).json({ error: "Failed to fetch history" });
+  }
+});
+
 export default router;
