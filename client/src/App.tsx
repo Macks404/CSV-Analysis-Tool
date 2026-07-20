@@ -58,7 +58,19 @@ function App() {
           }
         />
 
-        <Route path="/history" element={<HistoryPage />} />
+        <Route
+          path="/history"
+          element={
+            <>
+              <SignedIn>
+                <HistoryPage />
+              </SignedIn>
+              <SignedOut>
+                <Navigate to="/" replace />
+              </SignedOut>
+            </>
+          }
+        />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>

@@ -4,7 +4,7 @@ import type { ChartConfig } from "../components/charts/chartTypes";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
-interface CSVAnalysis {
+export interface CSVAnalysis {
   encoding: string;
   columns: string[];
   improvedColumnNames: Record<string, string>;
@@ -14,7 +14,7 @@ interface CSVAnalysis {
   charts?: ChartConfig[];
 }
 
-interface AISummaryData {
+export interface AISummaryData {
   summary: string;
   chartInsights: { chartName: string; insight: string }[];
   improvementTips: string[];

@@ -45,6 +45,7 @@ function FileOverviewPage() {
         },
       );
       const data = await response.json();
+      console.log(data);
 
       navigate("/analysis", { state: { data } });
     } catch (error) {

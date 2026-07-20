@@ -1,16 +1,19 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import type { CSVAnalysis, AISummaryData } from "./AnalyzePage";
 
 interface Analysis {
   id: string;
   fileName: string;
   createdAt: string;
   summaryText: string;
+  chartData: CSVAnalysis;
 }
 
-const HistoryPage = () => {
+function HistoryPage() {
   const { getToken } = useAuth();
+  const navigate = useNavigate();
   const [data, setData] = useState<Analysis[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +65,28 @@ const HistoryPage = () => {
     } catch {
       return text;
     }
+  };
+
+  const handleViewInsights = (item: Analysis) => {
+    let parsedSummary: AISummaryData;
+
+    try {
+      parsedSummary = JSON.parse(item.summaryText);
+    } catch {
+      parsedSummary = {
+        summary: item.summaryText,
+        chartInsights: [],
+        improvementTips: [],
+      };
+    }
+
+    const analyzePayload = {
+      originalName: item.fileName,
+      analysis: item.chartData,
+      aiSummary: parsedSummary,
+    };
+
+    navigate("/analysis", { state: { data: analyzePayload } });
   };
 
   if (loading) {
@@ -183,8 +208,10 @@ const HistoryPage = () => {
                   </div>
 
                   <div className="card-footer bg-transparent border-top p-3 text-center">
-                    {/* In the future, this link will point to a dedicated viewer page: /history/${item.id} */}
-                    <button className="btn btn-light w-100 fw-bold text-primary rounded-pill">
+                    <button
+                      className="btn btn-light w-100 fw-bold text-primary rounded-pill"
+                      onClick={() => handleViewInsights(item)}
+                    >
                       View Insights
                     </button>
                   </div>
@@ -196,6 +223,6 @@ const HistoryPage = () => {
       )}
     </div>
   );
-};
+}
 
 export default HistoryPage;
