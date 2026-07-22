@@ -120,27 +120,33 @@ function AnalyzePage() {
             <h3 className="h6 fw-bold mb-4 border-bottom pb-2">
               DATA VISUALIZATIONS
             </h3>
-            {analysis.charts?.map((chart) => {
-              const matchedInsight = aiSummary?.chartInsights?.find(
-                (insight) => insight.chartName === chart.title,
-              );
+            {!analysis.charts || analysis.charts.length === 0 ? (
+              <p className="text-muted-soft mb-0">
+                No visualizations available for this dataset.
+              </p>
+            ) : (
+              analysis.charts?.map((chart) => {
+                const matchedInsight = aiSummary?.chartInsights?.find(
+                  (insight) => insight.chartName === chart.title,
+                );
 
-              const enhancedChartConfig = {
-                ...chart,
-                description: matchedInsight
-                  ? matchedInsight.insight
-                  : chart.description,
-              };
+                const enhancedChartConfig = {
+                  ...chart,
+                  description: matchedInsight
+                    ? matchedInsight.insight
+                    : chart.description,
+                };
 
-              return (
-                <div
-                  key={enhancedChartConfig.id}
-                  className="keep-together mb-5"
-                >
-                  <ChartRenderer chart={enhancedChartConfig} />
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={enhancedChartConfig.id}
+                    className="keep-together mb-5"
+                  >
+                    <ChartRenderer chart={enhancedChartConfig} />
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
