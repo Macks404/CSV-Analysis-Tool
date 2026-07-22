@@ -99,7 +99,9 @@ function HistoryPage() {
         >
           <span className="visually-hidden">Loading...</span>
         </div>
-        <p className="mt-3 text-muted fw-medium">Retrieving your analyses...</p>
+        <p className="mt-3 text-secondary fw-medium">
+          Retrieving your analyses...
+        </p>
       </div>
     );
   }
@@ -135,9 +137,9 @@ function HistoryPage() {
 
       {data.length === 0 ? (
         <div className="text-center py-5 bg-white rounded-5 shadow-sm border border-light">
-          <div className="display-1 text-muted mb-3">📊</div>
+          <div className="display-1 text-secondary mb-3">📊</div>
           <h4 className="fw-bold text-dark">No history found</h4>
-          <p className="text-muted mb-4">
+          <p className="text-secondary mb-4">
             You haven't uploaded any CSVs yet. Let's uncover some insights!
           </p>
           <Link
@@ -185,7 +187,7 @@ function HistoryPage() {
                         >
                           {item.fileName}
                         </h5>
-                        <small className="text-muted fw-medium">
+                        <small className="text-secondary fw-medium">
                           {new Intl.DateTimeFormat("en-GB", {
                             dateStyle: "medium",
                             timeStyle: "short",
@@ -200,7 +202,7 @@ function HistoryPage() {
                     >
                       {preview.substring(0, 120)}
                       {preview.length > 120 ? (
-                        <span className="text-primary">...read more</span>
+                        <span className="text-primary">...</span>
                       ) : (
                         ""
                       )}
