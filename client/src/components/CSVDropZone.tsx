@@ -16,6 +16,11 @@ function CSVDropZone() {
       return;
     }
 
+    if (file.size > 10 * 1024 * 1024) {
+      setMessage("File size exceeds the 10MB limit.");
+      return;
+    }
+
     setIsLoading(true);
     setMessage("Detecting columns...");
 
